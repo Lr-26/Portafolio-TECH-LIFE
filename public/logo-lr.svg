@@ -1,0 +1,41 @@
+<svg viewBox="0 0 100 100" width="800" height="800" fill="none" xmlns="http://www.w3.org/2000/svg" style="background-color: #05060f;">
+  <defs>
+    <linearGradient id="lr-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0055ff" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#00f2ff" />
+    </linearGradient>
+    <filter id="lr-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Outer Frame -->
+  <circle cx="50" cy="50" r="46" stroke="rgba(0, 242, 255, 0.15)" stroke-width="4" />
+  <path d="M 50,4 A 46,46 0 0,1 96,50" stroke="url(#lr-grad)" stroke-width="4" stroke-linecap="round" />
+  <path d="M 50,96 A 46,46 0 0,1 4,50" stroke="url(#lr-grad)" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- The Monogram: Shared Stem -->
+  <!-- Central Vertical Stem -->
+  <path d="M 35,25 L 35,75" stroke="url(#lr-grad)" stroke-width="8" stroke-linecap="square" />
+  
+  <!-- The L bottom bar -->
+  <path d="M 35,75 L 60,75" stroke="url(#lr-grad)" stroke-width="8" stroke-linecap="square" />
+  
+  <!-- The R top curve -->
+  <!-- Start at 35,25. Line to 55,25. Curve to right to 75,50. Line to 35,50 -->
+  <path d="M 35,25 L 55,25 C 75,25 75,50 55,50 L 35,50" stroke="url(#lr-grad)" stroke-width="8" stroke-linecap="square" />
+  
+  <!-- The R diagonal leg -->
+  <path d="M 50,50 L 68,75" stroke="url(#lr-grad)" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Master Diagonal Tech Slash -->
+  <line x1="15" y1="85" x2="85" y2="15" stroke="#05060f" stroke-width="14" />
+  <line x1="15" y1="85" x2="85" y2="15" stroke="#fff" stroke-width="1.5" opacity="0.8" />
+  <line x1="13" y1="87" x2="87" y2="13" stroke="url(#lr-grad)" stroke-width="1" opacity="0.5" filter="url(#lr-glow)" />
+
+  <!-- The Neural Star Center -->
+  <path d="M 50,44 L 53,50 L 59,53 L 53,56 L 50,62 L 47,56 L 41,53 L 47,50 Z" fill="#fff" filter="url(#lr-glow)" />
+  <circle cx="50" cy="53" r="2.5" fill="#00f2ff" />
+</svg>

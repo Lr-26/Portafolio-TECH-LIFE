@@ -1,0 +1,38 @@
+<svg viewBox="0 0 100 100" width="800" height="800" fill="none" xmlns="http://www.w3.org/2000/svg" style="background-color: #05060f;">
+  <defs>
+    <linearGradient id="tl-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0055ff" />
+      <stop offset="50%" stop-color="#00a2ff" />
+      <stop offset="100%" stop-color="#00f2ff" />
+    </linearGradient>
+    <filter id="tl-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Outer Rings -->
+  <circle cx="50" cy="50" r="46" stroke="rgba(0, 242, 255, 0.15)" stroke-width="4" />
+  <path d="M 50,4 A 46,46 0 0,1 96,50" stroke="url(#tl-grad)" stroke-width="4" stroke-linecap="round" />
+  <path d="M 50,96 A 46,46 0 0,1 4,50" stroke="url(#tl-grad)" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Inner T & L intertwined structures -->
+  <!-- Top bar of T -->
+  <path d="M 24,32 L 68,32" stroke="url(#tl-grad)" stroke-width="9" stroke-linecap="square" />
+  <!-- Vertical stem of T -->
+  <path d="M 46,32 L 46,65" stroke="url(#tl-grad)" stroke-width="9" stroke-linecap="square" />
+  
+  <!-- Vertical stem of L -->
+  <path d="M 68,36 L 68,68" stroke="url(#tl-grad)" stroke-width="9" stroke-linecap="square" />
+  <!-- Bottom bar of L -->
+  <path d="M 68,68 L 86,68" stroke="url(#tl-grad)" stroke-width="9" stroke-linecap="square" />
+  
+  <!-- Master Diagonal Slash -->
+  <line x1="20" y1="80" x2="80" y2="20" stroke="#05060f" stroke-width="14" />
+  <line x1="20" y1="80" x2="80" y2="20" stroke="#fff" stroke-width="1.5" opacity="0.8" />
+  <line x1="18" y1="82" x2="82" y2="18" stroke="url(#tl-grad)" stroke-width="1" opacity="0.5" filter="url(#tl-glow)" />
+  
+  <!-- Center 4-Point Impact Star -->
+  <path d="M 50,38 L 53,47 L 62,50 L 53,53 L 50,62 L 47,53 L 38,50 L 47,47 Z" fill="#fff" filter="url(#tl-glow)" />
+  <circle cx="50" cy="50" r="2.5" fill="#00f2ff" />
+</svg>

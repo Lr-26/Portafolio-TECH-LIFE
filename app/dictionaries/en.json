@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "consultation": "Get Consultation",
+    "projects": "Projects",
+    "process": "My Process"
+  },
+  "hero": {
+    "headline": "TECHLIFE: Transforming",
+    "accent": "Business",
+    "description": "Elite AI development focusing on measurable ROI. I build intelligent solutions that save time, reduce costs, and scale your operations.",
+    "viewProjects": "View Projects",
+    "myProcess": "My Process"
+  },
+  "projects": {
+    "title": "Selected",
+    "accent": "Impacts",
+    "description": "Real-world AI implementations delivering tangible results.",
+    "items": [
+      {
+        "id": 1,
+        "title": "Autonomous Support Agent",
+        "description": "Llama 3-powered agent that reduced human support tickets by 65%.",
+        "category": "Conversational AI"
+      },
+      {
+        "id": 2,
+        "title": "Intelligent CRM Connector",
+        "description": "Automated workflow that cleans and scores leads using GPT-4o.",
+        "category": "Lead Automation"
+      },
+      {
+        "id": 3,
+        "title": "Predictive Sales Engine",
+        "description": "Historical data analysis using TensorFlow to predict next-month sales with 92% accuracy.",
+        "category": "Data Science"
+      }
+    ]
+  },
+  "services": {
+    "title": "Solutions that",
+    "accent": "Matter",
+    "description": "Cutting-edge AI implementation tailored to your specific needs.",
+    "items": [
+      {
+        "title": "Intelligent Data Search",
+        "desc": "Implementation of semantic search systems and advanced navigation for mission-critical applications."
+      },
+      {
+        "title": "Enterprise E-com Automation",
+        "desc": "Sales flow and inventory management optimization with smart Supabase and Polar SDK integrations."
+      },
+      {
+        "title": "High-Performance SaaS Development",
+        "desc": "Architecture for dynamic, scalable interfaces for high-end digital products and luxury experiences."
+      }
+    ]
+  },
+  "process": {
+    "title": "Strategic",
+    "accent": "Execution",
+    "steps": [
+      {
+        "title": "01. Discovery",
+        "desc": "Identifying bottlenecks and high-impact AI opportunities."
+      },
+      {
+        "title": "02. Architecture",
+        "desc": "Designing custom neural paths and automation logic."
+      },
+      {
+        "title": "03. Development",
+        "desc": "Building and training models with secure infrastructure."
+      },
+      {
+        "title": "04. Optimization",
+        "desc": "Continuous monitoring and refinement for peak performance."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Ready to",
+    "accent": "Scale?",
+    "description": "Book a discovery call to see how AI can transform your workflow.",
+    "button": "Initiate Consultation"
+  },
+  "trustedBy": "Trusted by innovative teams around the globe",
+  "newsletter": {
+    "title": "Subscribe to the Future",
+    "placeholder": "Your email address",
+    "button": "Subscribe"
+  },
+  "footer": {
+    "mission": "Empowering businesses through smart, scalable AI solutions.",
+    "col1": {
+      "title": "Navigation",
+      "links": ["Home", "Services", "Projects", "Process"]
+    },
+    "col2": {
+      "title": "Services",
+      "items": ["AI Chatbots", "Automations", "Custom Models"]
+    },
+    "col3": {
+      "title": "Connect",
+      "email": "hello@yourai.com",
+      "location": "Buenos Aires, Argentina",
+      "call": "Book discovery call"
+    },
+    "copy": "© 2026 AI Portfolio. All rights reserved."
+  }
+}

@@ -1,0 +1,77 @@
+<svg viewBox="0 0 100 100" width="800" height="800" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));">
+  <defs>
+    <!-- Blue L Gradient -->
+    <linearGradient id="metal-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    <!-- Metal Silver T Gradient -->
+    <linearGradient id="metal-silver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#94a3b8" />
+    </linearGradient>
+    
+    <!-- Inner glow/bevel overlays -->
+    <linearGradient id="bevel-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.3)" />
+    </linearGradient>
+    <linearGradient id="bevel-silver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.4)" />
+    </linearGradient>
+
+    <!-- Ring Silver Gloss Gradient -->
+    <linearGradient id="ring-silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="30%" stop-color="#e2e8f0" />
+      <stop offset="50%" stop-color="#94a3b8" />
+      <stop offset="70%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+  </defs>
+
+  <!-- BACKGROUND BADGE BODY -->
+  <circle cx="50" cy="50" r="48" fill="#0f172a" />
+  
+  <!-- THICK OUTER METALLIC RING -->
+  <circle cx="50" cy="50" r="46" fill="none" stroke="url(#ring-silver)" stroke-width="4" />
+  <circle cx="50" cy="50" r="49" fill="none" stroke="#020617" stroke-width="2" />
+  
+  <!-- DEEP INNER CORE PLATE -->
+  <circle cx="50" cy="50" r="43" fill="#020617" />
+
+  <!-- THE LT MONOGRAM (Scaled and Centered Upper Bound) -->
+  <g transform="translate(22, 11) scale(0.50)">
+    <!-- BACKING DARK CASE -->
+    <g transform="translate(0, 3)" stroke="#020617" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" />
+      <path d="M 52,20 L 88,20 M 70,20 L 70,55" />
+      <path d="M 40,40 L 60,40" />
+    </g>
+    
+    <!-- BLUE "L" -->
+    <g>
+      <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" stroke="url(#metal-blue)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" stroke="url(#bevel-blue)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 22,25 L 22,60" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+      <path d="M 21,26 L 21,60" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linecap="round" opacity="0.8" />
+    </g>
+
+    <!-- SILVER "T" -->
+    <g>
+      <path d="M 52,20 L 88,20 M 70,20 L 70,55" stroke="url(#metal-silver)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 52,20 L 88,20 M 70,20 L 70,55" stroke="url(#bevel-silver)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+
+  <!-- SILVER HORIZONTAL DIVIDER -->
+  <line x1="22" y1="72" x2="78" y2="72" stroke="url(#ring-silver)" stroke-width="0.75" opacity="0.9" />
+  
+  <!-- BOTTOM TEXT INSIDE THE BADGE -->
+  <text x="50" y="83" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="800" fill="url(#metal-silver)" letter-spacing="0.4" text-anchor="middle">AI TECH-LIFE</text>
+</svg>

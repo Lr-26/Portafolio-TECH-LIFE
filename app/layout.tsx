@@ -18,9 +18,11 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "AI Development Portfolio | Premium AI Solutions",
+  title: "TECH-LIFE | Premium AI Solutions",
   description: "Professional AI Development and Automation Services. Transforming business with cutting-edge artificial intelligence.",
 };
+
+import { LanguageProvider } from "./context/LanguageContext";
 
 export default function RootLayout({
   children,
@@ -31,7 +33,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${outfit.variable}`}>
        <body style={{ margin: 0 }}>
         <div className="bg-glow"></div>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

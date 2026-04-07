@@ -1,0 +1,29 @@
+<svg viewBox="0 0 100 100" width="800" height="800" fill="none" xmlns="http://www.w3.org/2000/svg" style="background-color: #05060f;">
+  <defs>
+    <linearGradient id="lr-hyper" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#2dd4bf" />
+    </linearGradient>
+  </defs>
+
+  <!-- Abstract Aura Background -->
+  <circle cx="50" cy="50" r="35" fill="#2dd4bf" style="filter: blur(20px); opacity: 0.15" />
+
+  <!-- THE GEOMETRIC LR MONOGRAM -->
+  
+  <!-- 1. Main Shared Stem (Gradient) -->
+  <path d="M 35,20 L 35,80" stroke="url(#lr-hyper)" stroke-width="14" stroke-linecap="round" />
+  
+  <!-- 2. L Base (Gradient) -->
+  <path d="M 35,80 L 65,80" stroke="url(#lr-hyper)" stroke-width="14" stroke-linecap="round" />
+  
+  <!-- 3. R Top Loop (Crisp White) -->
+  <path d="M 35,20 L 55,20 C 72,20 72,50 55,50 L 35,50" stroke="#ffffff" stroke-width="14" stroke-linecap="round" />
+  
+  <!-- 4. R Diagonal Leg (Crisp White) -->
+  <path d="M 48,50 L 70,80" stroke="#ffffff" stroke-width="14" stroke-linecap="round" />
+  
+  <!-- 5. The AI Tech Core Dot (Geometry & Balance) -->
+  <circle cx="78" cy="20" r="7" fill="#2dd4bf" />
+</svg>

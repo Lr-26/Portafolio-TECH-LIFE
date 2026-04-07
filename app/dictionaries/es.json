@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "consultation": "Obtener Consulta",
+    "projects": "Proyectos",
+    "process": "Mi Proceso"
+  },
+  "hero": {
+    "headline": "TECHLIFE: Transformando",
+    "accent": "Negocios",
+    "description": "Desarrollo de IA de Élite enfocado en ROI medible. Construyo soluciones inteligentes que ahorran tiempo, reducen costos y escalan sus operaciones.",
+    "viewProjects": "Ver Proyectos",
+    "myProcess": "Mi Proceso"
+  },
+  "projects": {
+    "title": "Impactos",
+    "accent": "Seleccionados",
+    "description": "Implementaciones de IA del mundo real que ofrecen resultados tangibles.",
+    "items": [
+      {
+        "id": 1,
+        "title": "Agente Autónomo de Soporte",
+        "description": "Agente basado en Llama 3 que redujo los tickets de soporte humano en un 65%.",
+        "category": "IA Conversacional"
+      },
+      {
+        "id": 2,
+        "title": "Conector CRM Inteligente",
+        "description": "Flujo de trabajo automatizado que limpia y califica leads usando GPT-4o.",
+        "category": "Automatización de Leads"
+      },
+      {
+        "id": 3,
+        "title": "Motor de Ventas Predictivo",
+        "description": "Análisis de datos históricos para predecir ventas con un 92% de precisión.",
+        "category": "Ciencia de Datos"
+      }
+    ]
+  },
+  "services": {
+    "title": "Soluciones que",
+    "accent": "Importan",
+    "description": "Implementación de IA de vanguardia adaptada a sus necesidades específicas.",
+    "items": [
+      {
+        "title": "Búsqueda Inteligente de Datos",
+        "desc": "Implementación de sistemas de búsqueda semántica y navegación avanzada tipo Deep Mountain para aplicaciones críticas."
+      },
+      {
+        "title": "Automatización Empresarial E-com",
+        "desc": "Optimización de flujos de venta y gestión de inventario con integraciones inteligentes de Supabase y Polar SDK."
+      },
+      {
+        "title": "Desarrollo de Plataformas SaaS",
+        "desc": "Arquitectura de interfaces dinámicas y escalables para productos digitales de alto rendimiento y experiencias de lujo."
+      }
+    ]
+  },
+  "process": {
+    "title": "Ejecución",
+    "accent": "Estratégica",
+    "steps": [
+      {
+        "title": "01. Descubrimiento",
+        "desc": "Identificación de cuellos de botella y oportunidades de IA de alto impacto."
+      },
+      {
+        "title": "02. Arquitectura",
+        "desc": "Diseño de rutas neuronales personalizadas y lógica de automatización."
+      },
+      {
+        "title": "03. Desarrollo",
+        "desc": "Construcción y entrenamiento de modelos con infraestructura segura."
+      },
+      {
+        "title": "04. Optimización",
+        "desc": "Monitoreo continuo y refinamiento para un rendimiento máximo."
+      }
+    ]
+  },
+  "contact": {
+    "title": "¿Listo para",
+    "accent": "Escalar?",
+    "description": "Reserve una llamada de descubrimiento para ver cómo la IA puede transformar su flujo de trabajo.",
+    "button": "Iniciar Consulta"
+  },
+  "trustedBy": "Empresas que confían en nuestro desarrollo",
+  "newsletter": {
+    "title": "Suscríbete al Futuro",
+    "placeholder": "Tu correo electrónico",
+    "button": "Suscribirse"
+  },
+  "footer": {
+    "mission": "Empoderando negocios a través de soluciones de IA inteligentes y escalables.",
+    "col1": {
+      "title": "Navegación",
+      "links": ["Inicio", "Servicios", "Proyectos", "Proceso"]
+    },
+    "col2": {
+      "title": "Servicios",
+      "items": ["Agentes IA", "Automatización", "Big Data"]
+    },
+    "col3": {
+      "title": "Contacto",
+      "email": "hola@tuai.com",
+      "location": "Buenos Aires, Argentina",
+      "call": "Agendar Llamada"
+    },
+    "copy": "© 2026 AI Portfolio. Todos los derechos reservados."
+  }
+}

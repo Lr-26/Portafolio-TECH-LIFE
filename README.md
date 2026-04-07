@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Premium AI Development Portfolio
+
+Professional, high-conversion portfolio for AI and Automation developers.
+
+## Features
+- **Modern Tech Stack**: Next.js 15 (App Router), TypeScript, Vanilla CSS.
+- **Premium Aesthetics**: Glassmorphism, Gold gradients, and custom background glows inspired by lezrai.com.
+- **Dynamic Content**: Stats grid, service showcase, and structured methodology sections.
+- **Interactive AI Assistant**: A custom-built Chat FAB for simulated engagement.
+- **Full-stack Foundation**: Built-in API route for handling contact form submissions.
 
 ## Getting Started
 
-First, run the development server:
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Explore the Code**:
+   - `app/page.tsx`: The main structure and content.
+   - `app/globals.css`: The design system and theme variables.
+   - `app/api/contact/route.ts`: Example backend for lead capture.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Customization
+- **Theme**: Modify the colors in `:root` inside `app/globals.css`.
+- **Fonts**: Update `app/layout.tsx` to include your favorite Google Fonts.
+- **Assets**: Replace `public/hero.png` with your own custom AI artwork.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed with by Antigravity.

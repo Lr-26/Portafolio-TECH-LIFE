@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Autonomous Customer Support Agent",
+    "description": "Llama 3-powered agent that reduced human support tickets by 65%. Feature-rich dashboard for lead monitoring.",
+    "category": "Conversational AI"
+  },
+  {
+    "id": 2,
+    "title": "Intelligent CRM Connector",
+    "description": "Automated workflow that cleans and scores leads using OpenAI's GPT-4o. Integrates directly with HubSpot.",
+    "category": "Inbound Automation"
+  },
+  {
+    "id": 3,
+    "title": "Predictive Sales Engine",
+    "description": "Historical data analysis using TensorFlow to predict next-month sales with 92% accuracy.",
+    "category": "Data Science"
+  }
+]
