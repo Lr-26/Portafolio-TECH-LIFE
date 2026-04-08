@@ -2,12 +2,14 @@
   "nav": {
     "consultation": "Obtener Consulta",
     "projects": "Proyectos",
-    "process": "Mi Proceso"
+    "process": "Mi Proceso",
+    "login": "Iniciar Sesión",
+    "register": "Crear Cuenta"
   },
   "hero": {
-    "headline": "TECHLIFE: Transformando",
-    "accent": "Negocios",
-    "description": "Desarrollo de IA de Élite enfocado en ROI medible. Construyo soluciones inteligentes que ahorran tiempo, reducen costos y escalan sus operaciones.",
+    "headline": "TECHLIFE",
+    "accent": "TECNOLOGÍA CON PROPÓSITO",
+    "description": "Desarrollamos ecosistemas digitales escalables donde la innovación estratégica y la ejecución técnica se unen para definir el futuro de su marca.",
     "viewProjects": "Ver Proyectos",
     "myProcess": "Mi Proceso"
   },
@@ -18,40 +20,54 @@
     "items": [
       {
         "id": 1,
-        "title": "Agente Autónomo de Soporte",
-        "description": "Agente basado en Llama 3 que redujo los tickets de soporte humano en un 65%.",
-        "category": "IA Conversacional"
+        "title": "Proyecto Rubi",
+        "description": "Plataforma E-commerce de lujo para accesorios de moda y óptica premium con interfaz de alta gama.",
+        "category": "E-commerce Premium",
+        "link": "https://proyecto-rubi.vercel.app",
+        "image": "/projects/rubi.png"
       },
       {
         "id": 2,
-        "title": "Conector CRM Inteligente",
-        "description": "Flujo de trabajo automatizado que limpia y califica leads usando GPT-4o.",
-        "category": "Automatización de Leads"
+        "title": "Vértice Extremo",
+        "description": "SaaS avanzado para gestión de expediciones y seguimiento interactivo de aventuras en tiempo real.",
+        "category": "SaaS / Adventure",
+        "link": "https://vertice-extremo-lr26.vercel.app",
+        "image": "/projects/vertice.png"
       },
       {
         "id": 3,
-        "title": "Motor de Ventas Predictivo",
-        "description": "Análisis de datos históricos para predecir ventas con un 92% de precisión.",
-        "category": "Ciencia de Datos"
+        "title": "Natural Mystic",
+        "description": "Ecosistema E-commerce escalable con autenticación Supabase y procesamiento de pagos Polar SDK.",
+        "category": "SaaS / Fintech",
+        "link": "https://natural-mystic-lr26.vercel.app",
+        "image": "/projects/mystic.png"
+      },
+      {
+        "id": 4,
+        "title": "Aura Fit",
+        "description": "Plataforma digital de bienestar integral con galerías inmersivas y arquitectura de alto rendimiento.",
+        "category": "Health & Tech",
+        "link": "https://aura-fit-lr26.vercel.app",
+        "image": "/projects/aura.png"
       }
     ]
   },
   "services": {
-    "title": "Soluciones que",
-    "accent": "Importan",
-    "description": "Implementación de IA de vanguardia adaptada a sus necesidades específicas.",
+    "title": "Sistemas de",
+    "accent": "Alto Nivel",
+    "description": "Especialización en infraestructuras digitales de alto rendimiento. Diseñamos soluciones tecnológicas que optimizan la operatividad y potencian la competitividad global.",
     "items": [
       {
-        "title": "Búsqueda Inteligente de Datos",
-        "desc": "Implementación de sistemas de búsqueda semántica y navegación avanzada tipo Deep Mountain para aplicaciones críticas."
+        "title": "Inteligencia de Datos",
+        "desc": "Sistemas de búsqueda semántica y procesamiento de flujos críticos para decisiones de negocio basadas en evidencia."
       },
       {
-        "title": "Automatización Empresarial E-com",
-        "desc": "Optimización de flujos de venta y gestión de inventario con integraciones inteligentes de Supabase y Polar SDK."
+        "title": "Automatización SaaS",
+        "desc": "Optimización de flujos operativos e inventario mediante integraciones robustas con Supabase y arquitecturas de nube escalables."
       },
       {
-        "title": "Desarrollo de Plataformas SaaS",
-        "desc": "Arquitectura de interfaces dinámicas y escalables para productos digitales de alto rendimiento y experiencias de lujo."
+        "title": "Interfaces de Élite",
+        "desc": "Desarrollo de experiencias digitales de alto rendimiento con un enfoque en la eficiencia del usuario y estética minimalista."
       }
     ]
   },

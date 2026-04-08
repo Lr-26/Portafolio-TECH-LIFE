@@ -2,12 +2,14 @@
   "nav": {
     "consultation": "Get Consultation",
     "projects": "Projects",
-    "process": "My Process"
+    "process": "My Process",
+    "login": "Login",
+    "register": "Register"
   },
   "hero": {
-    "headline": "TECHLIFE: Transforming",
-    "accent": "Business",
-    "description": "Elite AI development focusing on measurable ROI. I build intelligent solutions that save time, reduce costs, and scale your operations.",
+    "headline": "TECHLIFE",
+    "accent": "TECHNOLOGY WITH PURPOSE",
+    "description": "We develop scalable digital ecosystems where strategic innovation and technical execution unite to define the future of your brand.",
     "viewProjects": "View Projects",
     "myProcess": "My Process"
   },
@@ -18,40 +20,54 @@
     "items": [
       {
         "id": 1,
-        "title": "Autonomous Support Agent",
-        "description": "Llama 3-powered agent that reduced human support tickets by 65%.",
-        "category": "Conversational AI"
+        "title": "Proyecto Rubi",
+        "description": "Luxury E-commerce platform for high-end fashion accessories and eyewear with a premium interface.",
+        "category": "Premium E-commerce",
+        "link": "https://proyecto-rubi.vercel.app",
+        "image": "/projects/rubi.png"
       },
       {
         "id": 2,
-        "title": "Intelligent CRM Connector",
-        "description": "Automated workflow that cleans and scores leads using GPT-4o.",
-        "category": "Lead Automation"
+        "title": "Vertice Extremo",
+        "description": "Advanced SaaS for expedition management and real-time interactive adventure tracking.",
+        "category": "SaaS / Adventure",
+        "link": "https://vertice-extremo-lr26.vercel.app",
+        "image": "/projects/vertice.png"
       },
       {
         "id": 3,
-        "title": "Predictive Sales Engine",
-        "description": "Historical data analysis using TensorFlow to predict next-month sales with 92% accuracy.",
-        "category": "Data Science"
+        "title": "Natural Mystic",
+        "description": "Scalable E-commerce ecosystem with Supabase authentication and Polar SDK payment processing.",
+        "category": "SaaS / Fintech",
+        "link": "https://natural-mystic-lr26.vercel.app",
+        "image": "/projects/mystic.png"
+      },
+      {
+        "id": 4,
+        "title": "Aura Fit",
+        "description": "Comprehensive digital wellness platform featuring immersive galleries and high-performance architecture.",
+        "category": "Health & Tech",
+        "link": "https://aura-fit-lr26.vercel.app",
+        "image": "/projects/aura.png"
       }
     ]
   },
   "services": {
-    "title": "Solutions that",
-    "accent": "Matter",
-    "description": "Cutting-edge AI implementation tailored to your specific needs.",
+    "title": "High-Level",
+    "accent": "Systems",
+    "description": "Specialization in high-performance digital infrastructures. We design technological solutions that optimize operations and boost global competitiveness.",
     "items": [
       {
-        "title": "Intelligent Data Search",
-        "desc": "Implementation of semantic search systems and advanced navigation for mission-critical applications."
+        "title": "Data Intelligence",
+        "desc": "Semantic search systems and critical flow processing for business decisions based on evidence."
       },
       {
-        "title": "Enterprise E-com Automation",
-        "desc": "Sales flow and inventory management optimization with smart Supabase and Polar SDK integrations."
+        "title": "SaaS Automation",
+        "desc": "Optimizing operational flows and inventory through robust Supabase integrations and scalable cloud architectures."
       },
       {
-        "title": "High-Performance SaaS Development",
-        "desc": "Architecture for dynamic, scalable interfaces for high-end digital products and luxury experiences."
+        "title": "Elite Interfaces",
+        "desc": "Development of high-performance digital experiences with a focus on user efficiency and minimalist aesthetics."
       }
     ]
   },

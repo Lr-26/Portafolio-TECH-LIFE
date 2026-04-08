@@ -60,7 +60,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
     // Weighted random selection: favors bright areas (edges & sulci)
     const points: { x: number, y: number }[] = [];
-    const pCount = 550; // Increased particle density for brain form
+    const pCount = 200; // Further reduced for MAX fluidity (was 300)
 
     // Shuffle and sort by weight
     candidatePoints.sort(() => Math.random() - 0.5);
@@ -88,7 +88,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     let particles: any[] = [];
     let horizonParticles: any[] = [];
 
-    const hCount = 90;
+    const hCount = 30; // Further reduced (was 60)
 
     class Particle {
       x: number; y: number; vx: number; vy: number; size: number;
@@ -138,18 +138,19 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     };
 
     const animate = (time: number) => {
+      if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const w = canvas.width, h = canvas.height;
 
       // 1. Horizon Ocean
       ctx.beginPath(); ctx.strokeStyle = 'rgba(0, 242, 255, 0.12)'; ctx.lineWidth = 0.5;
       horizonParticles.forEach((hp, i) => {
-        // INCREASED FLUIDITY: Faster waves
-        const waveY = hp.baseY + Math.sin(time * 0.0028 + hp.offset) * 25;
-        ctx.beginPath(); ctx.arc(hp.x, waveY, 1.2, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 242, 255, 0.3)'; ctx.fill();
-        if (i > 0) {
-          const prevY = horizonParticles[i - 1].baseY + Math.sin(time * 0.0028 + horizonParticles[i - 1].offset) * 25;
-          ctx.beginPath(); ctx.moveTo(horizonParticles[i - 1].x, prevY); ctx.lineTo(hp.x, waveY); ctx.stroke();
+        // SIMPLIFIED: Less math, faster waves
+        const waveY = hp.baseY + Math.sin(time * 0.003 + hp.offset) * 15;
+        ctx.beginPath(); ctx.arc(hp.x, waveY, 1, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 242, 255, 0.2)'; ctx.fill();
+        if (i > 0 && i % 2 === 0) { // Only draw half the lines
+          const prevY = horizonParticles[i - 2].baseY + Math.sin(time * 0.003 + horizonParticles[i - 2].offset) * 15;
+          ctx.beginPath(); ctx.moveTo(horizonParticles[i - 2].x, prevY); ctx.lineTo(hp.x, waveY); ctx.stroke();
         }
       });
 
@@ -163,9 +164,9 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
 
         let connections = 0;
-        // ULTRA OPTIMIZATION: Check only nearby array neighbors, prevents framedrops
-        for (let j = i + 1; j < Math.min(i + 22, particles.length); j++) {
-          if (connections > 6) break; // Optimization: max lines per node
+        // ULTRA OPTIMIZATION: Check even fewer neighbors
+        for (let j = i + 1; j < Math.min(i + 8, particles.length); j++) {
+          if (connections > 3) break; 
           const p2 = particles[j];
           const dx = p.x - p2.x; const dy = p.y - p2.y;
           const d2 = dx * dx + dy * dy;
@@ -207,8 +208,8 @@ const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
   const [cables, setCables] = useState<any[]>([]);
 
   useEffect(() => {
-    const generatedCables = Array.from({ length: 36 }).map((_, i) => {
-      const angle = (i / 36) * Math.PI * 2;
+    const generatedCables = Array.from({ length: 16 }).map((_, i) => {
+      const angle = (i / 16) * Math.PI * 2;
       const length = 200 + Math.random() * 210;
       const endX = 300 + Math.cos(angle) * length;
       const endY = 300 + Math.sin(angle) * length;
@@ -241,64 +242,8 @@ const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
 };
 
 const TechLifeBrand = () => (
-  <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer', textDecoration: 'none' }}>
-    <svg viewBox="0 0 100 100" width="44" height="44" fill="none" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))' }}>
-      <defs>
-        {/* Hyper-Vibrant Cyan Gradient */}
-        <linearGradient id="metal-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22d3ee" />
-          <stop offset="50%" stopColor="#0ea5e9" />
-          <stop offset="100%" stopColor="#2563eb" />
-        </linearGradient>
-        {/* Polished Chrome Silver */}
-        <linearGradient id="metal-silver" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="20%" stopColor="#f8fafc" />
-          <stop offset="100%" stopColor="#cbd5e1" />
-        </linearGradient>
-        
-        {/* Glow Filters */}
-        <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        <filter id="ring-neon" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-      </defs>
-
-      {/* BACKGROUND BADGE BODY */}
-      <circle cx="50" cy="50" r="48" fill="#020617" />
-      
-      {/* VIBRANT OUTER NEON RING */}
-      <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(14, 165, 233, 0.15)" strokeWidth="4" />
-      <path d="M 50,4 A 46,46 0 0,1 96,50" stroke="#22d3ee" strokeWidth="4" strokeLinecap="round" filter="url(#ring-neon)" />
-      
-      {/* DEEP INNER CORE PLATE */}
-      <circle cx="50" cy="50" r="42" fill="#050615" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-
-      {/* THE LT MONOGRAM (Scaled and Centered Upper Bound) */}
-      <g transform="translate(22, 11) scale(0.50)" filter="url(#neon-glow)">
-        {/* BLUE-CYAN "L" */}
-        <g>
-          <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" stroke="url(#metal-cyan)" strokeWidth="19" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" stroke="rgba(255,255,255,0.3)" strokeWidth="19" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
-        </g>
-
-        {/* SILVER "T" */}
-        <g>
-          <path d="M 52,20 L 88,20 M 70,20 L 70,55" stroke="url(#metal-silver)" strokeWidth="19" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M 52,20 L 88,20 M 70,20 L 70,55" stroke="rgba(255,255,255,0.5)" strokeWidth="19" strokeLinecap="round" strokeLinejoin="round" opacity="0.3" />
-        </g>
-      </g>
-
-      {/* CYAN HORIZONTAL DIVIDER */}
-      <line x1="25" y1="72" x2="75" y2="72" stroke="#22d3ee" strokeWidth="1" opacity="0.6" filter="url(#ring-neon)" />
-      
-      {/* BOTTOM TEXT INSIDE THE BADGE */}
-      <text x="50" y="83" fontFamily="var(--font-inter), system-ui, sans-serif" fontSize="9" fontWeight="800" fill="url(#metal-silver)" letterSpacing="0.4" textAnchor="middle">AI TECH-LIFE</text>
-    </svg>
+  <a href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
+    <img src="/logo-lt-final-badge.svg" alt="TECHLIFE Logo" width="58" height="58" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }} />
   </a>
 );
 
@@ -325,13 +270,20 @@ export default function Home() {
     <div className={styles.page}>
       <nav className={styles.nav}>
         <TechLifeBrand />
-        <div className={styles.navLinks} style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <div className={styles.languageSwitcher}>
-            <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.3 }}>ESP</span>
-            <span style={{ opacity: 0.1 }}>/</span>
-            <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.3 }}>ENG</span>
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+          <div className={styles.languageSwitcher} style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', borderRight: '1px solid rgba(255,255,255,0.05)', paddingRight: '1.5rem' }}>
+            <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.4, transition: '0.3s', color: locale === "es" ? 'var(--primary)' : 'inherit' }}>ESP</span>
+            <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.4, transition: '0.3s', color: locale === "en" ? 'var(--primary)' : 'inherit' }}>ENG</span>
           </div>
-          <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>{t.nav.consultation}</button>
+          
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <a href="#" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', textDecoration: 'none', transition: '0.3s' }}>
+              {t.nav.login}
+            </a>
+            <button className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '8px', background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', boxShadow: 'none' }}>
+              {t.nav.register}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -342,8 +294,8 @@ export default function Home() {
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
-          <p className={styles.reveal} style={{ animationDelay: '0.2s', maxWidth: '550px', margin: '0 0 2.5rem' }}>{t.hero.description}</p>
-          <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.4s', zIndex: 100, position: 'relative' }}>
+          <p className={styles.reveal} style={{ animationDelay: '0.1s', maxWidth: '550px', margin: '0 0 2.5rem' }}>{t.hero.description}</p>
+          <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.2s', zIndex: 100, position: 'relative' }}>
             <button className="btn-primary" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
             <button className="btn-outline" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
           </div>
@@ -378,15 +330,34 @@ export default function Home() {
                  </div>
                  <h3 className={styles.serviceTitle}>{service.title}</h3>
                  <p className={styles.serviceDesc}>{service.desc}</p>
-                 <div className={styles.serviceFooter}>
-                   <span className={styles.serviceLink}>
-                     {locale === 'es' ? 'Explorar caso de éxito' : 'Explore use case'} 
-                     <span style={{ fontSize: '1.2rem' }}>➔</span>
-                   </span>
-                 </div>
                </div>
              );
           })}
+        </div>
+      </section>
+
+      <section id="projects" className={styles.section} style={{ background: 'rgba(10, 15, 30, 0.3)' }}>
+        <div className={styles.sectionTitle}>
+          <h2 className={styles.reveal}>{t.projects.title} <span className="gradient-text">{t.projects.accent}</span></h2>
+          <p className={styles.reveal} style={{ animationDelay: '0.1s', color: '#94a3b8' }}>{t.projects.description}</p>
+        </div>
+
+        <div className={styles.projectsGrid}>
+          {t.projects.items.map((project: any, idx: number) => (
+            <a href={project.link} target="_blank" rel="noopener noreferrer" key={project.id} className={`${styles.projectCard} ${styles.reveal}`} style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none' }}>
+              <div className={styles.projectImagePlaceholder}>
+                <img src={project.image} alt={project.title} className={styles.projectImage} />
+                <div className={styles.projectCategory}>{project.category}</div>
+              </div>
+              <div className={styles.projectContent}>
+                <h3 className={styles.projectTitle}>{project.title}</h3>
+                <p className={styles.projectDesc}>{project.description}</p>
+                <div className={styles.projectBtn}>
+                  {locale === 'es' ? 'Ver Proyecto' : 'View Project'} ➔
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </section>
 
@@ -456,7 +427,7 @@ export default function Home() {
             <div className={styles.chatInfo}>
               <div className={styles.statusDot}></div>
               <div>
-                <p style={{ margin: 0, fontWeight: 800, fontSize: '0.9rem', color: '#fff' }}>TECHLIFE AI</p>
+                <p style={{ margin: 0, fontWeight: 800, fontSize: '0.9rem', color: '#fff' }}>TECHLIFE</p>
                 <p style={{ margin: 0, fontSize: '0.7rem', color: '#2dd4bf' }}>Online</p>
               </div>
             </div>

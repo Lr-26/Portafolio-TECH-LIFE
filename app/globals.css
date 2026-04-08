@@ -1,13 +1,13 @@
 :root {
-  --background: #05060f;
-  --foreground: #f8fafc;
-  --primary: #00f2ff;
-  --primary-gradient: linear-gradient(135deg, #00f2ff 0%, #0072ff 100%);
-  --secondary: #1e293b;
-  --accent: #3b82f6;
-  --card-bg: rgba(15, 23, 42, 0.6);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --glow: 0 0 15px rgba(0, 242, 255, 0.3);
+  --background: #020308;
+  --foreground: #f1f5f9;
+  --primary: #2dd4bf;
+  --primary-gradient: linear-gradient(135deg, #2dd4bf 0%, #0ea5e9 100%);
+  --secondary: #0a0f1d;
+  --accent: #6366f1;
+  --card-bg: rgba(10, 15, 30, 0.4);
+  --card-border: rgba(255, 255, 255, 0.03);
+  --glow: 0 0 30px rgba(45, 212, 191, 0.1);
   --font-serif: var(--font-playfair), serif;
   --font-sans: var(--font-outfit), system-ui, sans-serif;
   --font-inter: var(--font-inter);
@@ -42,7 +42,8 @@ body {
 
 h1, h2, h3 {
   font-family: var(--font-serif);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  font-weight: 800;
 }
 
 .gradient-text {

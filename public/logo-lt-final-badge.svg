@@ -45,8 +45,8 @@
   <!-- DEEP INNER CORE PLATE -->
   <circle cx="50" cy="50" r="43" fill="#020617" />
 
-  <!-- THE LT MONOGRAM (Scaled and Centered Upper Bound) -->
-  <g transform="translate(22, 11) scale(0.50)">
+  <!-- THE LT MONOGRAM (Moved down for tighter composition) -->
+  <g transform="translate(22, 16) scale(0.50)">
     <!-- BACKING DARK CASE -->
     <g transform="translate(0, 3)" stroke="#020617" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
       <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" />
@@ -70,8 +70,8 @@
   </g>
 
   <!-- SILVER HORIZONTAL DIVIDER -->
-  <line x1="22" y1="72" x2="78" y2="72" stroke="url(#ring-silver)" stroke-width="0.75" opacity="0.9" />
+  <line x1="22" y1="73" x2="78" y2="73" stroke="url(#ring-silver)" stroke-width="0.75" opacity="0.9" />
   
   <!-- BOTTOM TEXT INSIDE THE BADGE -->
-  <text x="50" y="83" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="800" fill="url(#metal-silver)" letter-spacing="0.4" text-anchor="middle">AI TECH-LIFE</text>
+  <text x="50" y="82" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="800" fill="url(#metal-silver)" letter-spacing="0.4" text-anchor="middle">AI TECH-LIFE</text>
 </svg>
