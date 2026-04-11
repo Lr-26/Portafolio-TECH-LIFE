@@ -252,6 +252,8 @@ export default function Home() {
   const { t, locale, setLocale } = useLanguage();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
   const [isForming, setIsForming] = useState(false);
+  const [projectSearch, setProjectSearch] = useState('');
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -342,8 +344,41 @@ export default function Home() {
           <p className={styles.reveal} style={{ animationDelay: '0.1s', color: '#94a3b8' }}>{t.projects.description}</p>
         </div>
 
+        {/* Dynamic Project Search */}
+        <div className={styles.reveal} style={{ maxWidth: '600px', margin: '0 auto 4rem', position: 'relative', animationDelay: '0.2s' }}>
+          <div style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4, color: 'var(--primary)' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <input 
+            type="text" 
+            placeholder={locale === 'es' ? 'Filtrar por tecnología o nombre... (ej: E-commerce, SaaS, AI)' : 'Filter by tech or name... (e.g. E-commerce, SaaS, AI)'}
+            className={styles.projectSearchInput}
+            value={projectSearch}
+            onChange={(e) => setProjectSearch(e.target.value)}
+            style={{ 
+              width: '100%', 
+              padding: '1.2rem 1.5rem 1.2rem 4rem', 
+              background: 'rgba(255,255,255,0.03)', 
+              border: '1px solid rgba(255,255,255,0.08)', 
+              borderRadius: '16px', 
+              color: '#fff', 
+              fontSize: '0.95rem',
+              outline: 'none',
+              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
+            }}
+          />
+        </div>
+
         <div className={styles.projectsGrid}>
-          {t.projects.items.map((project: any, idx: number) => (
+          {t.projects.items
+            .filter((p: any) => {
+              const query = projectSearch.toLowerCase();
+              return p.title.toLowerCase().includes(query) || 
+                     p.category.toLowerCase().includes(query) || 
+                     p.description.toLowerCase().includes(query);
+            })
+            .map((project: any, idx: number) => (
             <a href={project.link} target="_blank" rel="noopener noreferrer" key={project.id} className={`${styles.projectCard} ${styles.reveal}`} style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none' }}>
               <div className={styles.projectImagePlaceholder}>
                 <img src={project.image} alt={project.title} className={styles.projectImage} />
@@ -395,13 +430,46 @@ export default function Home() {
 
           <div className={styles.footerCol}>
             <h4>{locale === 'es' ? 'Nueva Consulta' : 'New Inquiry'}</h4>
-            <form className={styles.footerContactForm} onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder={locale === 'es' ? 'Tu email corporativo' : 'Corporate email'} className={styles.footerInput} />
-              <textarea placeholder={locale === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help?'} className={`${styles.footerInput} ${styles.footerTextarea}`}></textarea>
-              <button className="btn-primary" style={{ padding: '0.8rem' }}>
-                {locale === 'es' ? 'Enviar Mensaje' : 'Send Message'}
-              </button>
-            </form>
+            {contactStatus === 'success' ? (
+              <div style={{ background: 'rgba(45, 212, 191, 0.1)', border: '1px solid rgba(45, 212, 191, 0.2)', padding: '1.5rem', borderRadius: '12px', color: '#2dd4bf', fontSize: '0.9rem', lineHeight: '1.6' }}>
+                {locale === 'es' 
+                  ? '¡Mensaje enviado con éxito! Nuestro sistema de IA está analizando tu caso y te contactaremos en menos de 24hs.' 
+                  : 'Message sent successfully! Our AI system is analyzing your case and we will contact you within 24 hours.'}
+              </div>
+            ) : (
+              <form className={styles.footerContactForm} onSubmit={async (e) => {
+                e.preventDefault();
+                setContactStatus('loading');
+                const form = e.currentTarget;
+                const email = (form.elements[0] as HTMLInputElement).value;
+                const message = (form.elements[1] as HTMLTextAreaElement).value;
+                
+                try {
+                  const res = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, message }),
+                    headers: { 'Content-Type': 'application/json' }
+                  });
+                  if (res.ok) {
+                    setContactStatus('success');
+                    form.reset();
+                  } else {
+                    setContactStatus('error');
+                  }
+                } catch (err) {
+                  setContactStatus('error');
+                }
+              }}>
+                <input type="email" required placeholder={locale === 'es' ? 'Tu email corporativo' : 'Corporate email'} className={styles.footerInput} />
+                <textarea required placeholder={locale === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help?'} className={`${styles.footerInput} ${styles.footerTextarea}`}></textarea>
+                <button type="submit" className="btn-primary" style={{ padding: '0.8rem' }} disabled={contactStatus === 'loading'}>
+                  {contactStatus === 'loading' 
+                    ? (locale === 'es' ? 'Enviando...' : 'Sending...') 
+                    : (locale === 'es' ? 'Enviar Mensaje' : 'Send Message')}
+                </button>
+                {contactStatus === 'error' && <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.5rem' }}>{locale === 'es' ? 'Error al enviar. Intente de nuevo.' : 'Failed to send. Try again.'}</p>}
+              </form>
+            )}
           </div>
         </div>
 

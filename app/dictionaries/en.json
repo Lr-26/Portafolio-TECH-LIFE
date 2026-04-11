@@ -23,7 +23,7 @@
         "title": "Proyecto Rubi",
         "description": "Luxury E-commerce platform for high-end fashion accessories and eyewear with a premium interface.",
         "category": "Premium E-commerce",
-        "link": "https://proyecto-rubi.vercel.app",
+        "link": "https://proyecto-rubi.vercel.app/",
         "image": "/projects/rubi.png"
       },
       {
@@ -31,7 +31,7 @@
         "title": "Vertice Extremo",
         "description": "Advanced SaaS for expedition management and real-time interactive adventure tracking.",
         "category": "SaaS / Adventure",
-        "link": "https://vertice-extremo-lr26.vercel.app",
+        "link": "https://vertice-extremo-lr26.vercel.app/",
         "image": "/projects/vertice.png"
       },
       {
@@ -39,7 +39,7 @@
         "title": "Natural Mystic",
         "description": "Scalable E-commerce ecosystem with Supabase authentication and Polar SDK payment processing.",
         "category": "SaaS / Fintech",
-        "link": "https://natural-mystic-lr26.vercel.app",
+        "link": "https://natural-mystic-lr26.vercel.app/",
         "image": "/projects/mystic.png"
       },
       {
@@ -47,8 +47,16 @@
         "title": "Aura Fit",
         "description": "Comprehensive digital wellness platform featuring immersive galleries and high-performance architecture.",
         "category": "Health & Tech",
-        "link": "https://aura-fit-lr26.vercel.app",
+        "link": "https://aura-fit-lr26.vercel.app/",
         "image": "/projects/aura.png"
+      },
+      {
+        "id": 5,
+        "title": "LuxeBite",
+        "description": "Luxury digital dining experience with smart reservation system and signature wine pairings.",
+        "category": "Gastronomy / Luxury",
+        "link": "https://luxebite-lr26.vercel.app/",
+        "image": "/projects/luxebite.png"
       }
     ]
   },
