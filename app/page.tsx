@@ -8,71 +8,72 @@ import { useLanguage } from "./context/LanguageContext";
 const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: number, active: boolean }, isForming: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // ADVANCED IMAGE SAMPLING ALGORITHM - Generates a highly realistic and recognizable Neural Brain shape
-  const brainTargets = useMemo(() => {
-    if (typeof document === 'undefined') return []; // Prevent SSR errors
+  // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
+  const targetPoints = useMemo(() => {
+    const points: { x: number, y: number, z: number, s?: number }[] = [];
+    const pCount = 1000; // Optimal density for visual weight and 60FPS fluid performance
 
-    const canvas = document.createElement('canvas');
-    canvas.width = 600;
-    canvas.height = 600;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return [];
+    // 1. Core Sphere (Global Brain) - 400 points
+    const sRadius = 45; // Compact core
+    const phi = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < 400; i++) {
+        const y = 1 - (i / (400 - 1)) * 2;
+        const radius = Math.sqrt(1 - y * y);
+        const theta = phi * i;
 
-    const path = new Path2D();
-    // Anatomical structure based directly on biological brain profiles
-    path.ellipse(240, 220, 85, 75, -0.3, 0, Math.PI * 2); // Frontal
-    path.ellipse(330, 175, 105, 75, 0, 0, Math.PI * 2);   // Parietal
-    path.ellipse(410, 245, 80, 80, 0.2, 0, Math.PI * 2);  // Occipital
-    path.ellipse(310, 290, 95, 65, -0.1, 0, Math.PI * 2); // Temporal
-    path.ellipse(390, 330, 60, 45, -0.4, 0, Math.PI * 2); // Cerebellum
-    path.ellipse(340, 390, 25, 65, -0.3, 0, Math.PI * 2); // Brain Stem
-
-    // 1. High opacity edges for the "cortex" rim
-    ctx.lineWidth = 14;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-    ctx.stroke(path);
-
-    // 2. Low opacity fill for internal "white matter"
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-    ctx.fill(path);
-
-    // 3. Draw internal Sulci (Primary Folds) to mimic deep neural pathways
-    ctx.beginPath();
-    ctx.moveTo(330, 175); ctx.quadraticCurveTo(350, 245, 310, 290); // Central sulcus
-    ctx.moveTo(280, 205); ctx.quadraticCurveTo(290, 245, 240, 275); // Lateral fissure part 1
-    ctx.moveTo(380, 205); ctx.quadraticCurveTo(370, 255, 410, 285); // Parieto-occipital
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-    ctx.stroke();
-
-    // Sample pixels mapping alpha density to spawn weight
-    const imgData = ctx.getImageData(0, 0, 600, 600).data;
-    const candidatePoints: { x: number, y: number, weight: number }[] = [];
-
-    for (let y = 0; y < 600; y += 4) { // Fast subsampling
-      for (let x = 0; x < 600; x += 4) {
-        const alpha = imgData[(y * 600 + x) * 4 + 3]; // get Alpha channel
-        if (alpha > 5) {
-          candidatePoints.push({ x, y, weight: alpha });
-        }
-      }
+        points.push({
+            x: Math.cos(theta) * radius * sRadius + 300,
+            y: y * sRadius + 300,
+            z: Math.sin(theta) * radius * sRadius,
+            s: 0.8 
+        });
     }
 
-    // Weighted random selection: favors bright areas (edges & sulci)
-    const points: { x: number, y: number }[] = [];
-    const pCount = 200; // Further reduced for MAX fluidity (was 300)
+    // 2. Six High-Density Orbital Data Rings - 480 points
+    const rings = [
+        { r: 65,  count: 80, tiltX: 0.2, tiltZ: 0.1 },
+        { r: 75,  count: 80, tiltX: -0.5, tiltZ: 0.3 },
+        { r: 85,  count: 80, tiltX: 0.1, tiltZ: -0.6 },
+        { r: 95,  count: 80, tiltX: 0.8, tiltZ: 0.2 },
+        { r: 105, count: 80, tiltX: -0.2, tiltZ: 0.8 },
+        { r: 115, count: 80, tiltX: 0.5, tiltZ: -0.4 }
+    ];
 
-    // Shuffle and sort by weight
-    candidatePoints.sort(() => Math.random() - 0.5);
-    candidatePoints.sort((a, b) => (b.weight * Math.random()) - (a.weight * Math.random()));
+    rings.forEach(ring => {
+        for (let i = 0; i < ring.count; i++) {
+            const angle = (i / ring.count) * Math.PI * 2;
+            let px = Math.cos(angle) * ring.r;
+            let py = 0;
+            let pz = Math.sin(angle) * ring.r;
 
-    const scale = 0.65; // Make the brain noticeably smaller (65% of original size)
-    for (let i = 0; i < Math.min(pCount, candidatePoints.length); i++) {
-      points.push({
-        // Scale towards the center (300, 300) and adjust balance offset
-        x: (candidatePoints[i].x - 300) * scale + 300 - 15,
-        y: (candidatePoints[i].y - 300) * scale + 300 - 20
-      });
+            // Apply XYZ tilts
+            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
+            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
+            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
+            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
+
+            points.push({
+                x: x2 + 300,
+                y: y2 + 300,
+                z: z1,
+                s: Math.random() > 0.95 ? 2.5 : 0.6 // Tiny dots, rare glowing nodes
+            });
+        }
+    });
+
+    // 3. Stardust Cloud (Ambient particles filling the void) - 600 points
+    while (points.length < pCount) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const p = Math.acos(2.0 * v - 1.0);
+        const r = 50 + Math.random() * 80; // Tightly packed cloud around the rings
+        points.push({
+            x: r * Math.sin(p) * Math.cos(theta) + 300,
+            y: r * Math.sin(p) * Math.sin(theta) + 300,
+            z: r * Math.cos(p),
+            s: 0.3 // Micro dust
+        });
     }
 
     return points;
@@ -92,23 +93,41 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
     class Particle {
       x: number; y: number; vx: number; vy: number; size: number;
-      tx: number; ty: number;
-      constructor(w: number, h: number, target: { x: number, y: number }) {
+      tx: number; ty: number; tz: number; // Added TZ for 3D depth
+      constructor(w: number, h: number, target: { x: number, y: number, z: number, s?: number }) {
         this.x = Math.random() * w; this.y = Math.random() * h;
-        // INCREASED FLUIDITY: 3x faster base movement
         this.vx = (Math.random() - 0.5) * 2.2; this.vy = (Math.random() - 0.5) * 2.2;
-        this.size = 0.5 + Math.random() * 1.5;
+        this.size = (0.8 + Math.random() * 1.5) * (target.s || 1); // Much bigger, bold particles
         this.tx = target.x; this.ty = target.y;
+        this.tz = target.z; 
       }
-      update(w: number, h: number, forming: boolean) {
+      update(w: number, h: number, forming: boolean, rotation: number) {
         if (forming) {
-          // Aggressive snap + much more fluid breathing animation
-          this.x += (this.tx - this.x) * 0.16 + Math.sin(Date.now() * 0.0035 + this.ty) * 0.45;
-          this.y += (this.ty - this.y) * 0.16 + Math.cos(Date.now() * 0.0035 + this.tx) * 0.45;
+          // TRUE Y-AXIS 3D ROTATION (Left to Right)
+          const centerX = w * 0.75;
+          const dx = this.tx - centerX;
+          const dz = this.tz;
+
+          const cos = Math.cos(rotation);
+          const sin = Math.sin(rotation);
+
+          // Rotation Matrix Y-Axis
+          const rx = (dx * cos + dz * sin) + centerX;
+          const rz = -dx * sin + dz * cos;
+
+          // Perspective scaling based on depth
+          const perspective = (rz + 200) / 400; // 0.25 to 0.75 range
+          const targetSize = this.size * (0.8 + perspective * 0.6);
+
+          this.x += (rx - this.x) * 0.12 + Math.sin(Date.now() * 0.0035 + this.ty) * 0.45;
+          this.y += (this.ty - this.y) * 0.12 + Math.cos(Date.now() * 0.0035 + this.tx) * 0.45;
+
+          return { alpha: 0.1 + perspective * 0.8, size: targetSize };
         } else {
           this.x += this.vx; this.y += this.vy;
           if (this.x < 0 || this.x > w) this.vx *= -1;
           if (this.y < 0 || this.y > h) this.vy *= -1;
+          return { alpha: 0.5, size: this.size };
         }
       }
     }
@@ -119,18 +138,20 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       const w = canvas.width, h = canvas.height;
       particles = []; horizonParticles = [];
 
-      const pCountLocal = brainTargets.length > 0 ? brainTargets.length : 550;
+      const pCountLocal = targetPoints.length;
       for (let i = 0; i < pCountLocal; i++) {
-        // Fallback target if empty during SSR
-        const target = brainTargets.length > 0 ? brainTargets[i % brainTargets.length] : { x: 300, y: 300 };
-        // Scale targets contextually to screen space, shifted perfectly into right column
-        const boundingSize = Math.min(w * 0.8, h); // Keep brain proportional without stretching
+        const target = targetPoints[i];
+
+        // Scale targets to screen space
         const realTarget = {
-          // 0.75 moves the center point to 75% horizontally (right half)
-          x: ((target.x / 600) - 0.5) * boundingSize + (w * 0.75),
-          y: ((target.y / 600) - 0.5) * boundingSize + (h * 0.5)
+          x: ((target.x / 600) - 0.5) * 400 + (w * 0.75),
+          y: ((target.y / 600) - 0.5) * 400 + (h * 0.5),
+          z: target.z, // Direct Z from spherical distribution
+          s: target.s // Passed size modifier
         };
-        particles.push(new Particle(w, h, realTarget));
+
+        const p = new Particle(w, h, realTarget);
+        particles.push(p);
       }
       for (let i = 0; i < hCount; i++) {
         horizonParticles.push({ x: (i / hCount) * w, baseY: h * 0.8, offset: Math.random() * Math.PI * 2 });
@@ -142,39 +163,34 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const w = canvas.width, h = canvas.height;
 
-      // 1. Horizon Ocean
-      ctx.beginPath(); ctx.strokeStyle = 'rgba(0, 242, 255, 0.12)'; ctx.lineWidth = 0.5;
-      horizonParticles.forEach((hp, i) => {
-        // SIMPLIFIED: Less math, faster waves
-        const waveY = hp.baseY + Math.sin(time * 0.003 + hp.offset) * 15;
-        ctx.beginPath(); ctx.arc(hp.x, waveY, 1, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 242, 255, 0.2)'; ctx.fill();
-        if (i > 0 && i % 2 === 0) { // Only draw half the lines
-          const prevY = horizonParticles[i - 2].baseY + Math.sin(time * 0.003 + horizonParticles[i - 2].offset) * 15;
-          ctx.beginPath(); ctx.moveTo(horizonParticles[i - 2].x, prevY); ctx.lineTo(hp.x, waveY); ctx.stroke();
-        }
-      });
+      const rotation = isForming ? (time * 0.0001) : 0; // Much slower, majestic rotation
+
+      // DELETED: Unprofessional Horizon Ocean Code. Clean 3D is vastly superior.
 
       // 2. Dynamic Adaptive Node Connections
-      const maxConnDist = isForming ? 55 : 110;
+      const maxConnDist = isForming ? 70 : 120; // Reduced for performance optimization
       const connDistSq = maxConnDist * maxConnDist;
 
       ctx.fillStyle = isForming ? 'rgba(0, 242, 255, 1)' : 'rgba(0, 242, 255, 0.5)';
       particles.forEach((p, i) => {
-        p.update(w, h, isForming);
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+        const { alpha, size } = p.update(w, h, isForming, rotation);
+        ctx.globalAlpha = alpha;
+        ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1.0;
 
         let connections = 0;
-        // ULTRA OPTIMIZATION: Check even fewer neighbors
-        for (let j = i + 1; j < Math.min(i + 8, particles.length); j++) {
-          if (connections > 3) break;
+        // Hyper-optimized loop: strict culling guarantees 60 FPS
+        for (let j = i + 1; j < Math.min(i + 10, particles.length); j++) {
+          if (connections > 2) break; // Strict connection limit for lightning-fast render
           const p2 = particles[j];
           const dx = p.x - p2.x; const dy = p.y - p2.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < connDistSq) {
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
-            const intensity = isForming ? 0.35 : 0.08;
-            ctx.strokeStyle = `rgba(0, 242, 255, ${intensity * (1 - Math.sqrt(d2) / maxConnDist)})`;
-            ctx.lineWidth = isForming ? 0.8 : 0.4; ctx.stroke();
+            // Ultra-simplified opacity
+            ctx.strokeStyle = `rgba(0, 242, 255, ${0.15})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
             connections++;
           }
         }
@@ -198,7 +214,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     setTimeout(init, 50);
     requestAnimationFrame(animate);
     return () => { window.removeEventListener('resize', init); cancelAnimationFrame(animationFrameId); };
-  }, [mousePos, isForming, brainTargets]);
+  }, [mousePos, isForming, targetPoints]);
 
   return <canvas ref={canvasRef} className={styles.particleCanvas} />;
 };
@@ -243,31 +259,46 @@ const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
 
 const ZraiBrand = () => (
   <a href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
-    <img 
-      src="/zrai-logo-removebg-preview.png" 
-      alt="Z-RAI Logo" 
-      width="180" 
-      height="auto" 
-      style={{ 
+    <img
+      src="/zrai-logo-removebg-preview.png"
+      alt="Z-RAI Logo"
+      width="140"
+      height="auto"
+      style={{
         objectFit: 'contain',
         filter: 'drop-shadow(0 0 8px rgba(0, 242, 255, 0.3))'
-      }} 
+      }}
     />
   </a>
 );
 
 export default function Home() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showNav, setShowNav] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const { t, locale, setLocale } = useLanguage();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
-  const [isForming, setIsForming] = useState(false);
+  const [isForming, setIsForming] = useState(true);
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const cycle = setInterval(() => setIsForming(f => !f), 7500);
-    return () => clearInterval(cycle);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setShowNav(false);
+      } else {
+        setShowNav(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    // Neural core is now permanent as requested
   }, []);
 
   const handleHeroMouseMove = (e: React.MouseEvent) => {
@@ -279,7 +310,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <nav className={styles.nav}>
+      <nav className={`${styles.nav} ${!showNav ? styles.navHidden : ""}`}>
         <ZraiBrand />
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
           <div className={styles.languageSwitcher} style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', borderRight: '1px solid rgba(255,255,255,0.05)', paddingRight: '1.5rem' }}>

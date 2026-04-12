@@ -8,16 +8,20 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 0.6rem 8%;
+  padding: 0.4rem 8%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  background: #000; /* Purest black */
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(45, 212, 191, 0.3); /* Cyan border light */
+  box-shadow: 0 4px 20px rgba(45, 212, 191, 0.15); /* The "small light" below */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+}
+
+.navHidden {
+  transform: translateY(-100%);
 }
 
 .logo {

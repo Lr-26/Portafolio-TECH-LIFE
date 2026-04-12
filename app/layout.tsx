@@ -18,8 +18,11 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "TECH-LIFE | Premium AI Solutions",
+  title: "Z-RAI | Premium AI Solutions",
   description: "Professional AI Development and Automation Services. Transforming business with cutting-edge artificial intelligence.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 import { LanguageProvider } from "./context/LanguageContext";
