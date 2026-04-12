@@ -166,7 +166,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
         let connections = 0;
         // ULTRA OPTIMIZATION: Check even fewer neighbors
         for (let j = i + 1; j < Math.min(i + 8, particles.length); j++) {
-          if (connections > 3) break; 
+          if (connections > 3) break;
           const p2 = particles[j];
           const dx = p.x - p2.x; const dy = p.y - p2.y;
           const d2 = dx * dx + dy * dy;
@@ -241,9 +241,18 @@ const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
   );
 };
 
-const TechLifeBrand = () => (
+const ZraiBrand = () => (
   <a href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
-    <img src="/logo-lt-final-badge.svg" alt="TECHLIFE Logo" width="58" height="58" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }} />
+    <img 
+      src="/zrai-logo-removebg-preview.png" 
+      alt="Z-RAI Logo" 
+      width="180" 
+      height="auto" 
+      style={{ 
+        objectFit: 'contain',
+        filter: 'drop-shadow(0 0 8px rgba(0, 242, 255, 0.3))'
+      }} 
+    />
   </a>
 );
 
@@ -271,13 +280,13 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <nav className={styles.nav}>
-        <TechLifeBrand />
+        <ZraiBrand />
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
           <div className={styles.languageSwitcher} style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', borderRight: '1px solid rgba(255,255,255,0.05)', paddingRight: '1.5rem' }}>
             <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.4, transition: '0.3s', color: locale === "es" ? 'var(--primary)' : 'inherit' }}>ESP</span>
             <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.4, transition: '0.3s', color: locale === "en" ? 'var(--primary)' : 'inherit' }}>ENG</span>
           </div>
-          
+
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <a href="#" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', textDecoration: 'none', transition: '0.3s' }}>
               {t.nav.login}
@@ -313,27 +322,27 @@ export default function Home() {
           <h2 className={styles.reveal} style={{ fontSize: '3rem' }}>{t.services.title} <span className="gradient-text">{t.services.accent}</span></h2>
           <p className={styles.reveal} style={{ animationDelay: '0.1s', color: '#94a3b8', marginTop: '1rem', fontSize: '1.2rem' }}>{t.services.description || 'Elevating architecture through pure code.'}</p>
         </div>
-        
+
         <div className={styles.servicesGrid}>
           {t.services.items.map((service: any, idx: number) => {
-             // Custom designed SVG Icons for AI logic
-             const SVGs = [
-               <svg key="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
-               <svg key="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>,
-               <svg key="3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-             ];
-             return (
-               <div key={idx} className={`${styles.serviceCard} ${styles.reveal}`} style={{ animationDelay: (0.15 + idx * 0.1) + 's' }}>
-                 <div className={styles.serviceHeader}>
-                   <div className={styles.serviceIcon}>
-                     {SVGs[idx % SVGs.length]}
-                   </div>
-                   <div className={styles.serviceNumber}>0{idx + 1}</div>
-                 </div>
-                 <h3 className={styles.serviceTitle}>{service.title}</h3>
-                 <p className={styles.serviceDesc}>{service.desc}</p>
-               </div>
-             );
+            // Custom designed SVG Icons for AI logic
+            const SVGs = [
+              <svg key="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>,
+              <svg key="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>,
+              <svg key="3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            ];
+            return (
+              <div key={idx} className={`${styles.serviceCard} ${styles.reveal}`} style={{ animationDelay: (0.15 + idx * 0.1) + 's' }}>
+                <div className={styles.serviceHeader}>
+                  <div className={styles.serviceIcon}>
+                    {SVGs[idx % SVGs.length]}
+                  </div>
+                  <div className={styles.serviceNumber}>0{idx + 1}</div>
+                </div>
+                <h3 className={styles.serviceTitle}>{service.title}</h3>
+                <p className={styles.serviceDesc}>{service.desc}</p>
+              </div>
+            );
           })}
         </div>
       </section>
@@ -349,19 +358,19 @@ export default function Home() {
           <div style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4, color: 'var(--primary)' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </div>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder={locale === 'es' ? 'Filtrar por tecnología o nombre... (ej: E-commerce, SaaS, AI)' : 'Filter by tech or name... (e.g. E-commerce, SaaS, AI)'}
             className={styles.projectSearchInput}
             value={projectSearch}
             onChange={(e) => setProjectSearch(e.target.value)}
-            style={{ 
-              width: '100%', 
-              padding: '1.2rem 1.5rem 1.2rem 4rem', 
-              background: 'rgba(255,255,255,0.03)', 
-              border: '1px solid rgba(255,255,255,0.08)', 
-              borderRadius: '16px', 
-              color: '#fff', 
+            style={{
+              width: '100%',
+              padding: '1.2rem 1.5rem 1.2rem 4rem',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '16px',
+              color: '#fff',
               fontSize: '0.95rem',
               outline: 'none',
               transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -374,25 +383,25 @@ export default function Home() {
           {t.projects.items
             .filter((p: any) => {
               const query = projectSearch.toLowerCase();
-              return p.title.toLowerCase().includes(query) || 
-                     p.category.toLowerCase().includes(query) || 
-                     p.description.toLowerCase().includes(query);
+              return p.title.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query);
             })
             .map((project: any, idx: number) => (
-            <a href={project.link} target="_blank" rel="noopener noreferrer" key={project.id} className={`${styles.projectCard} ${styles.reveal}`} style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none' }}>
-              <div className={styles.projectImagePlaceholder}>
-                <img src={project.image} alt={project.title} className={styles.projectImage} />
-                <div className={styles.projectCategory}>{project.category}</div>
-              </div>
-              <div className={styles.projectContent}>
-                <h3 className={styles.projectTitle}>{project.title}</h3>
-                <p className={styles.projectDesc}>{project.description}</p>
-                <div className={styles.projectBtn}>
-                  {locale === 'es' ? 'Ver Proyecto' : 'View Project'} ➔
+              <a href={project.link} target="_blank" rel="noopener noreferrer" key={project.id} className={`${styles.projectCard} ${styles.reveal}`} style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none' }}>
+                <div className={styles.projectImagePlaceholder}>
+                  <img src={project.image} alt={project.title} className={styles.projectImage} />
+                  <div className={styles.projectCategory}>{project.category}</div>
                 </div>
-              </div>
-            </a>
-          ))}
+                <div className={styles.projectContent}>
+                  <h3 className={styles.projectTitle}>{project.title}</h3>
+                  <p className={styles.projectDesc}>{project.description}</p>
+                  <div className={styles.projectBtn}>
+                    {locale === 'es' ? 'Ver Proyecto' : 'View Project'} ➔
+                  </div>
+                </div>
+              </a>
+            ))}
         </div>
       </section>
 
@@ -401,14 +410,14 @@ export default function Home() {
       <footer className={styles.footerMain}>
         <div className={styles.footerGrid}>
           <div className={styles.footerCol}>
-            <TechLifeBrand />
+            <ZraiBrand />
             <p style={{ maxWidth: '300px' }}>
-              {locale === 'es' 
-                ? 'Transformando negocios tradicionales en potencias digitales mediante soluciones de búsqueda inteligente y automatización SaaS de alto rendimiento.' 
+              {locale === 'es'
+                ? 'Transformando negocios tradicionales en potencias digitales mediante soluciones de búsqueda inteligente y automatización SaaS de alto rendimiento.'
                 : 'Transforming traditional businesses into digital powerhouses through intelligent search solutions and high-performance SaaS automation.'}
             </p>
           </div>
-          
+
           <div className={styles.footerCol}>
             <h4>{locale === 'es' ? 'Navegación' : 'Navigation'}</h4>
             <ul className={styles.footerLinkList}>
@@ -432,8 +441,8 @@ export default function Home() {
             <h4>{locale === 'es' ? 'Nueva Consulta' : 'New Inquiry'}</h4>
             {contactStatus === 'success' ? (
               <div style={{ background: 'rgba(45, 212, 191, 0.1)', border: '1px solid rgba(45, 212, 191, 0.2)', padding: '1.5rem', borderRadius: '12px', color: '#2dd4bf', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                {locale === 'es' 
-                  ? '¡Mensaje enviado con éxito! Nuestro sistema de IA está analizando tu caso y te contactaremos en menos de 24hs.' 
+                {locale === 'es'
+                  ? '¡Mensaje enviado con éxito! Nuestro sistema de IA está analizando tu caso y te contactaremos en menos de 24hs.'
                   : 'Message sent successfully! Our AI system is analyzing your case and we will contact you within 24 hours.'}
               </div>
             ) : (
@@ -443,7 +452,7 @@ export default function Home() {
                 const form = e.currentTarget;
                 const email = (form.elements[0] as HTMLInputElement).value;
                 const message = (form.elements[1] as HTMLTextAreaElement).value;
-                
+
                 try {
                   const res = await fetch('/api/contact', {
                     method: 'POST',
@@ -463,8 +472,8 @@ export default function Home() {
                 <input type="email" required placeholder={locale === 'es' ? 'Tu email corporativo' : 'Corporate email'} className={styles.footerInput} />
                 <textarea required placeholder={locale === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help?'} className={`${styles.footerInput} ${styles.footerTextarea}`}></textarea>
                 <button type="submit" className="btn-primary" style={{ padding: '0.8rem' }} disabled={contactStatus === 'loading'}>
-                  {contactStatus === 'loading' 
-                    ? (locale === 'es' ? 'Enviando...' : 'Sending...') 
+                  {contactStatus === 'loading'
+                    ? (locale === 'es' ? 'Enviando...' : 'Sending...')
                     : (locale === 'es' ? 'Enviar Mensaje' : 'Send Message')}
                 </button>
                 {contactStatus === 'error' && <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.5rem' }}>{locale === 'es' ? 'Error al enviar. Intente de nuevo.' : 'Failed to send. Try again.'}</p>}
@@ -482,52 +491,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      <div className={styles.chatFab} onClick={() => setIsChatOpen(!isChatOpen)}>
-        <svg viewBox="0 0 100 100" width="32" height="32" fill="none">
-          <path d="M 25,20 L 25,75 A 5,5 0 0,0 30,80 L 88,80" stroke="#fff" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M 52,20 L 88,20 M 70,20 L 70,55" stroke="#fff" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-
-      {isChatOpen && (
-        <div className={styles.chatWindow}>
-          <div className={styles.chatHeader}>
-            <div className={styles.chatInfo}>
-              <div className={styles.statusDot}></div>
-              <div>
-                <p style={{ margin: 0, fontWeight: 800, fontSize: '0.9rem', color: '#fff' }}>TECHLIFE</p>
-                <p style={{ margin: 0, fontSize: '0.7rem', color: '#2dd4bf' }}>Online</p>
-              </div>
-            </div>
-            <span onClick={() => setIsChatOpen(false)} style={{ cursor: 'pointer', color: '#475569', fontSize: '1.2rem' }}>✕</span>
-          </div>
-
-          <div className={styles.chatBody}>
-            <div className={`${styles.message} ${styles.msgBot}`}>
-              {locale === 'es' 
-                ? '¡Hola! Soy el asistente de TECHLIFE. ¿En qué proyecto de automatización o búsqueda inteligente estás pensando?' 
-                : 'Hello! I am the TECHLIFE assistant. What automation or intelligent search project are you thinking about?'}
-            </div>
-            <div className={`${styles.message} ${styles.msgUser}`}>
-               {locale === 'es' ? 'Quiero escalar mi negocio' : 'I want to scale my business'}
-            </div>
-            <div className={`${styles.message} ${styles.msgBot}`}>
-               {locale === 'es' 
-                ? 'Excelente. Analizamos tus cuellos de botella y diseñamos una arquitectura SaaS a medida. ¿Te gustaría agendar una llamada?' 
-                : 'Excellent. We analyze your bottlenecks and design a custom SaaS architecture. Would you like to schedule a call?'}
-            </div>
-          </div>
-
-          <div className={styles.chatInputArea}>
-            <input 
-              type="text" 
-              placeholder={locale === 'es' ? 'Escribe tu mensaje...' : 'Type your message...'} 
-              className={styles.chatInput}
-            />
-            <button className="btn-primary" style={{ padding: '0.6rem 1rem', borderRadius: '10px' }}>➔</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

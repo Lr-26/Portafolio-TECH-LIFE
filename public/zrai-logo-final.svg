@@ -1,0 +1,89 @@
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Premium Chrome Gradient -->
+    <linearGradient id="chromeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="20%" stop-color="#D1D5DB" />
+      <stop offset="45%" stop-color="#94A3B8" />
+      <stop offset="50%" stop-color="#475569" />
+      <stop offset="55%" stop-color="#94A3B8" />
+      <stop offset="85%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <!-- Chrome Edge Shine -->
+    <linearGradient id="edgeShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="20%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="80%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.5" />
+    </linearGradient>
+
+    <!-- Blue/Purple Glow -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Sharp Bevel -->
+    <filter id="bevelShadow">
+      <feOffset dx="2" dy="2" />
+      <feGaussianBlur stdDeviation="1.5" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.8 0" />
+      <feBlend in="SourceGraphic" mode="normal" />
+    </filter>
+  </defs>
+
+  <!-- Main Monogram Group -->
+  <g transform="translate(150, 80)">
+    
+    <!-- Outer Glow for the whole logo -->
+    <ellipse cx="250" cy="100" rx="350" ry="150" fill="url(#chromeGradient)" opacity="0.03" />
+
+    <!-- Letter Z - Stylized Chrome -->
+    <path d="M0 20 H120 L30 140 H150" fill="none" stroke="url(#chromeGradient)" stroke-width="28" stroke-linejoin="round" filter="url(#bevelShadow)" />
+    <path d="M0 20 H120 L30 140 H150" fill="none" stroke="url(#edgeShine)" stroke-width="2" opacity="0.6" />
+
+    <!-- Connector Piece -->
+    <path d="M75 80 H220" stroke="url(#chromeGradient)" stroke-width="12" stroke-linecap="round" />
+
+    <!-- Letter R - Stylized Chrome -->
+    <g transform="translate(240, 0)">
+      <path d="M0 20 V140" fill="none" stroke="url(#chromeGradient)" stroke-width="28" stroke-linecap="round" filter="url(#bevelShadow)" />
+      <path d="M0 20 H50 C90 20 110 45 110 80 C110 115 90 140 50 140 H0" fill="none" stroke="url(#chromeGradient)" stroke-width="28" filter="url(#bevelShadow)" />
+      <path d="M40 80 L110 140" fill="none" stroke="url(#chromeGradient)" stroke-width="28" stroke-linecap="round" filter="url(#bevelShadow)" />
+      <!-- Shine reflections -->
+      <path d="M0 20 V140 M0 20 H50 C90 20 110 45 110 80" fill="none" stroke="url(#edgeShine)" stroke-width="2" opacity="0.5" />
+    </g>
+
+    <!-- 3D Neural Cube - The "Core" -->
+    <g transform="translate(35, 45)" filter="url(#neonGlow)">
+      <!-- Isometric Wireframe Cube -->
+      <path d="M25 0 L50 15 L50 45 L25 60 L0 45 L0 15 Z" fill="rgba(0, 242, 255, 0.1)" stroke="#00F2FF" stroke-width="1.5" />
+      <path d="M0 15 L25 30 L50 15 M25 30 L25 60" stroke="#00F2FF" stroke-width="1.5" />
+      
+      <!-- Inside Nodes -->
+      <circle cx="25" cy="0" r="3" fill="#00F2FF" />
+      <circle cx="50" cy="15" r="3" fill="#00F2FF" />
+      <circle cx="50" cy="45" r="3" fill="#AC52FF" />
+      <circle cx="25" cy="60" r="3" fill="#00F2FF" />
+      <circle cx="0" cy="45" r="3" fill="#AC52FF" />
+      <circle cx="0" cy="15" r="3" fill="#00F2FF" />
+      <circle cx="25" cy="30" r="4" fill="#fff" />
+      
+      <!-- Pulse Animation (Visual only in SVG static for now, can add CSS) -->
+    </g>
+  </g>
+
+  <!-- Professional Typography -->
+  <g transform="translate(400, 320)">
+    <text text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-weight="900" font-size="48" letter-spacing="12" filter="url(#bevelShadow)">
+      <tspan fill="url(#chromeGradient)">Z-RAI</tspan>
+      <tspan fill="url(#chromeGradient)" opacity="0.8"> SOFTWARE AI</tspan>
+    </text>
+    <!-- Subtitle Glow -->
+    <text text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-weight="900" font-size="48" letter-spacing="12" fill="#00F2FF" opacity="0.15" filter="url(#neonGlow)">
+      Z-RAI SOFTWARE AI
+    </text>
+  </g>
+</svg>

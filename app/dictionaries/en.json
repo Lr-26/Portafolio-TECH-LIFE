@@ -7,8 +7,8 @@
     "register": "Register"
   },
   "hero": {
-    "headline": "TECHLIFE",
-    "accent": "TECHNOLOGY WITH PURPOSE",
+    "headline": "Z-RAI",
+    "accent": "SOFTWARE AI",
     "description": "We develop scalable digital ecosystems where strategic innovation and technical execution unite to define the future of your brand.",
     "viewProjects": "View Projects",
     "myProcess": "My Process"
@@ -117,11 +117,20 @@
     "mission": "Empowering businesses through smart, scalable AI solutions.",
     "col1": {
       "title": "Navigation",
-      "links": ["Home", "Services", "Projects", "Process"]
+      "links": [
+        "Home",
+        "Services",
+        "Projects",
+        "Process"
+      ]
     },
     "col2": {
       "title": "Services",
-      "items": ["AI Chatbots", "Automations", "Custom Models"]
+      "items": [
+        "AI Chatbots",
+        "Automations",
+        "Custom Models"
+      ]
     },
     "col3": {
       "title": "Connect",
@@ -129,6 +138,6 @@
       "location": "Buenos Aires, Argentina",
       "call": "Book discovery call"
     },
-    "copy": "© 2026 AI Portfolio. All rights reserved."
+    "copy": "© 2026 Z-RAI. All rights reserved."
   }
 }

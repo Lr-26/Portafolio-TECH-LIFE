@@ -7,8 +7,8 @@
     "register": "Crear Cuenta"
   },
   "hero": {
-    "headline": "TECHLIFE",
-    "accent": "TECNOLOGÍA CON PROPÓSITO",
+    "headline": "Z-RAI",
+    "accent": "SOFTWARE AI",
     "description": "Desarrollamos ecosistemas digitales escalables donde la innovación estratégica y la ejecución técnica se unen para definir el futuro de su marca.",
     "viewProjects": "Ver Proyectos",
     "myProcess": "Mi Proceso"
@@ -117,11 +117,20 @@
     "mission": "Empoderando negocios a través de soluciones de IA inteligentes y escalables.",
     "col1": {
       "title": "Navegación",
-      "links": ["Inicio", "Servicios", "Proyectos", "Proceso"]
+      "links": [
+        "Inicio",
+        "Servicios",
+        "Proyectos",
+        "Proceso"
+      ]
     },
     "col2": {
       "title": "Servicios",
-      "items": ["Agentes IA", "Automatización", "Big Data"]
+      "items": [
+        "Agentes IA",
+        "Automatización",
+        "Big Data"
+      ]
     },
     "col3": {
       "title": "Contacto",
@@ -129,6 +138,6 @@
       "location": "Buenos Aires, Argentina",
       "call": "Agendar Llamada"
     },
-    "copy": "© 2026 AI Portfolio. Todos los derechos reservados."
+    "copy": "© 2026 Z-RAI. Todos los derechos reservados."
   }
 }
