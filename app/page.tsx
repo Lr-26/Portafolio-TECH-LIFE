@@ -86,7 +86,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
     // 1. Central "Power Core" Circle/Sphere (350 points)
     const coreCount = 350;
-    const coreRadius = 25; 
+    const coreRadius = 45; 
     for (let i = 0; i < coreCount; i++) {
         const u = Math.random();
         const v = Math.random();
@@ -97,15 +97,15 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
             x: r * Math.sin(phi) * Math.cos(theta) + 300,
             y: r * Math.sin(phi) * Math.sin(theta) + 300,
             z: r * Math.cos(phi),
-            s: 1.2 // Bold core particles
+            s: 1.4 // Slightly bigger core particles
         });
     }
 
-    // 2. Three Majestic Orbital Rings (500 points total)
+    // 2. Three Majestic Orbital Rings (500 points total) - SCALED UP
     const rings = [
-        { r: 70, count: 150, tiltX: 0.1, tiltZ: 0.1 },
-        { r: 95, count: 150, tiltX: 0.8, tiltZ: -0.3 },
-        { r: 120, count: 200, tiltX: -0.5, tiltZ: 0.8 }
+        { r: 110, count: 150, tiltX: 0.1, tiltZ: 0.1 },
+        { r: 160, count: 150, tiltX: 0.8, tiltZ: -0.3 },
+        { r: 210, count: 200, tiltX: -0.5, tiltZ: 0.8 }
     ];
 
     rings.forEach(ring => {
