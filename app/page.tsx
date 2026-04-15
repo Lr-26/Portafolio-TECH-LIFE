@@ -82,69 +82,62 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
   // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
   const targetPoints = useMemo(() => {
     const points: { x: number, y: number, z: number, s?: number }[] = [];
-    const pCount = 1000; // Optimal density for visual weight and 60FPS fluid performance
+    const pCount = 1000;
 
-    // 1. Core Sphere (Global Brain) - 400 points
-    const sRadius = 45; // Compact core
-    const phi = Math.PI * (3 - Math.sqrt(5));
-    for (let i = 0; i < 400; i++) {
-      const y = 1 - (i / (400 - 1)) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const theta = phi * i;
-
-      points.push({
-        x: Math.cos(theta) * radius * sRadius + 300,
-        y: y * sRadius + 300,
-        z: Math.sin(theta) * radius * sRadius,
-        s: 0.8
-      });
+    // 1. Central "Power Core" Circle/Sphere (350 points)
+    const coreCount = 350;
+    const coreRadius = 25; 
+    for (let i = 0; i < coreCount; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2 * Math.PI;
+        const phi = Math.acos(2 * v - 1);
+        const r = coreRadius * Math.pow(Math.random(), 0.5); // Dense center
+        points.push({
+            x: r * Math.sin(phi) * Math.cos(theta) + 300,
+            y: r * Math.sin(phi) * Math.sin(theta) + 300,
+            z: r * Math.cos(phi),
+            s: 1.2 // Bold core particles
+        });
     }
 
-    // 2. Six High-Density Orbital Data Rings - 480 points
+    // 2. Three Majestic Orbital Rings (500 points total)
     const rings = [
-      { r: 65, count: 80, tiltX: 0.2, tiltZ: 0.1 },
-      { r: 75, count: 80, tiltX: -0.5, tiltZ: 0.3 },
-      { r: 85, count: 80, tiltX: 0.1, tiltZ: -0.6 },
-      { r: 95, count: 80, tiltX: 0.8, tiltZ: 0.2 },
-      { r: 105, count: 80, tiltX: -0.2, tiltZ: 0.8 },
-      { r: 115, count: 80, tiltX: 0.5, tiltZ: -0.4 }
+        { r: 70, count: 150, tiltX: 0.1, tiltZ: 0.1 },
+        { r: 95, count: 150, tiltX: 0.8, tiltZ: -0.3 },
+        { r: 120, count: 200, tiltX: -0.5, tiltZ: 0.8 }
     ];
 
     rings.forEach(ring => {
-      for (let i = 0; i < ring.count; i++) {
-        const angle = (i / ring.count) * Math.PI * 2;
-        let px = Math.cos(angle) * ring.r;
-        let py = 0;
-        let pz = Math.sin(angle) * ring.r;
+        for (let i = 0; i < ring.count; i++) {
+            const angle = (i / ring.count) * Math.PI * 2;
+            let px = Math.cos(angle) * ring.r;
+            let py = 0;
+            let pz = Math.sin(angle) * ring.r;
 
-        // Apply XYZ tilts
-        const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
-        const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
-        const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
-        const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
+            // Apply tilts
+            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
+            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
+            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
+            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
 
-        points.push({
-          x: x2 + 300,
-          y: y2 + 300,
-          z: z1,
-          s: Math.random() > 0.95 ? 2.5 : 0.6 // Tiny dots, rare glowing nodes
-        });
-      }
+            points.push({
+                x: x2 + 300,
+                y: y2 + 300,
+                z: z1,
+                s: 0.7
+            });
+        }
     });
 
-    // 3. Stardust Cloud (Ambient particles filling the void) - 600 points
+    // 3. Ambient Connections nodes (for network effect)
     while (points.length < pCount) {
-      const u = Math.random();
-      const v = Math.random();
-      const theta = u * 2.0 * Math.PI;
-      const p = Math.acos(2.0 * v - 1.0);
-      const r = 50 + Math.random() * 80; // Tightly packed cloud around the rings
-      points.push({
-        x: r * Math.sin(p) * Math.cos(theta) + 300,
-        y: r * Math.sin(p) * Math.sin(theta) + 300,
-        z: r * Math.cos(p),
-        s: 0.3 // Micro dust
-      });
+        points.push({
+            x: Math.random() * 600,
+            y: Math.random() * 600,
+            z: (Math.random() - 0.5) * 100,
+            s: 0.3
+        });
     }
 
     return points;
