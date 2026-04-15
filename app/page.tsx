@@ -4,6 +4,77 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
 
+/* --- NEW CHATBOT COMPONENT --- */
+const ChatBot = ({ locale }: { locale: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ type: 'bot' | 'user', text: string }[]>([
+    { type: 'bot', text: locale === 'es' ? '¡Hola! Soy tu asistente de Z-RAI. ¿En qué puedo ayudarte hoy?' : 'Hello! I am your Z-RAI assistant. How can I help you today?' }
+  ]);
+
+  const quickQueries = locale === 'es' 
+    ? ['¿Qué servicios ofrecen?', '¿Cómo empezar un proyecto?', 'Ver portafolio'] 
+    : ['What services do you offer?', 'How to start a project?', 'View portfolio'];
+
+  const handleQuery = (query: string) => {
+    setMessages(prev => [...prev, { type: 'user', text: query }]);
+    setTimeout(() => {
+      let response = '';
+      if (query.includes('servicios') || query.includes('services')) {
+        response = locale === 'es' 
+          ? 'Desarrollamos sistemas de IA de próxima generación, automatización neuronal y arquitecturas escalables para la élite digital.'
+          : 'We develop next-generation AI systems, neural automation, and scalable architectures for the digital elite.';
+      } else {
+        response = locale === 'es'
+          ? 'Interesante consulta. El equipo de Z-RAI está listo para profundizar en tu visión. ¿Deseas agendar una reunión?'
+          : 'Interesting inquiry. The Z-RAI team is ready to dive into your vision. Would you like to schedule a meeting?';
+      }
+      setMessages(prev => [...prev, { type: 'bot', text: response }]);
+    }, 600);
+  };
+
+  return (
+    <>
+      <div className={styles.chatFab} onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? (
+          <span style={{ fontSize: '1.2rem', color: '#fff' }}>×</span>
+        ) : (
+          <div className={styles.neuralPulse}>
+            <img src="/zrai-logo-removebg-preview.png" alt="Z-R" width="32" height="auto" style={{ filter: 'brightness(0) invert(1)' }} />
+          </div>
+        )}
+      </div>
+
+      {isOpen && (
+        <div className={styles.chatWindow}>
+          <div className={styles.chatHeader}>
+            <div className={styles.chatInfo}>
+              <div className={styles.neuralStatus} />
+              <span className={styles.brandTitle}>Z-RAI NEURAL CORE</span>
+            </div>
+            <button onClick={() => setIsOpen(false)} className={styles.closeBtn}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+          <div className={styles.chatBody}>
+            {messages.map((msg, i) => (
+              <div key={i} className={msg.type === 'bot' ? styles.msgBot : styles.msgUser}>
+                {msg.text}
+              </div>
+            ))}
+          </div>
+          <div className={styles.chatInputArea}>
+            <div className={styles.quickActionsContainer}>
+              {quickQueries.map((q, i) => (
+                <button key={i} onClick={() => handleQuery(q)} className={styles.quickActionBtn}>{q}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 /* Ultimate 3D Wireframe Brain Particle Engine - Studio Quality */
 const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: number, active: boolean }, isForming: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,63 +88,63 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     const sRadius = 45; // Compact core
     const phi = Math.PI * (3 - Math.sqrt(5));
     for (let i = 0; i < 400; i++) {
-        const y = 1 - (i / (400 - 1)) * 2;
-        const radius = Math.sqrt(1 - y * y);
-        const theta = phi * i;
+      const y = 1 - (i / (400 - 1)) * 2;
+      const radius = Math.sqrt(1 - y * y);
+      const theta = phi * i;
 
-        points.push({
-            x: Math.cos(theta) * radius * sRadius + 300,
-            y: y * sRadius + 300,
-            z: Math.sin(theta) * radius * sRadius,
-            s: 0.8 
-        });
+      points.push({
+        x: Math.cos(theta) * radius * sRadius + 300,
+        y: y * sRadius + 300,
+        z: Math.sin(theta) * radius * sRadius,
+        s: 0.8
+      });
     }
 
     // 2. Six High-Density Orbital Data Rings - 480 points
     const rings = [
-        { r: 65,  count: 80, tiltX: 0.2, tiltZ: 0.1 },
-        { r: 75,  count: 80, tiltX: -0.5, tiltZ: 0.3 },
-        { r: 85,  count: 80, tiltX: 0.1, tiltZ: -0.6 },
-        { r: 95,  count: 80, tiltX: 0.8, tiltZ: 0.2 },
-        { r: 105, count: 80, tiltX: -0.2, tiltZ: 0.8 },
-        { r: 115, count: 80, tiltX: 0.5, tiltZ: -0.4 }
+      { r: 65, count: 80, tiltX: 0.2, tiltZ: 0.1 },
+      { r: 75, count: 80, tiltX: -0.5, tiltZ: 0.3 },
+      { r: 85, count: 80, tiltX: 0.1, tiltZ: -0.6 },
+      { r: 95, count: 80, tiltX: 0.8, tiltZ: 0.2 },
+      { r: 105, count: 80, tiltX: -0.2, tiltZ: 0.8 },
+      { r: 115, count: 80, tiltX: 0.5, tiltZ: -0.4 }
     ];
 
     rings.forEach(ring => {
-        for (let i = 0; i < ring.count; i++) {
-            const angle = (i / ring.count) * Math.PI * 2;
-            let px = Math.cos(angle) * ring.r;
-            let py = 0;
-            let pz = Math.sin(angle) * ring.r;
+      for (let i = 0; i < ring.count; i++) {
+        const angle = (i / ring.count) * Math.PI * 2;
+        let px = Math.cos(angle) * ring.r;
+        let py = 0;
+        let pz = Math.sin(angle) * ring.r;
 
-            // Apply XYZ tilts
-            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
-            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
-            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
-            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
+        // Apply XYZ tilts
+        const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
+        const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
+        const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
+        const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
 
-            points.push({
-                x: x2 + 300,
-                y: y2 + 300,
-                z: z1,
-                s: Math.random() > 0.95 ? 2.5 : 0.6 // Tiny dots, rare glowing nodes
-            });
-        }
+        points.push({
+          x: x2 + 300,
+          y: y2 + 300,
+          z: z1,
+          s: Math.random() > 0.95 ? 2.5 : 0.6 // Tiny dots, rare glowing nodes
+        });
+      }
     });
 
     // 3. Stardust Cloud (Ambient particles filling the void) - 600 points
     while (points.length < pCount) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = u * 2.0 * Math.PI;
-        const p = Math.acos(2.0 * v - 1.0);
-        const r = 50 + Math.random() * 80; // Tightly packed cloud around the rings
-        points.push({
-            x: r * Math.sin(p) * Math.cos(theta) + 300,
-            y: r * Math.sin(p) * Math.sin(theta) + 300,
-            z: r * Math.cos(p),
-            s: 0.3 // Micro dust
-        });
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const p = Math.acos(2.0 * v - 1.0);
+      const r = 50 + Math.random() * 80; // Tightly packed cloud around the rings
+      points.push({
+        x: r * Math.sin(p) * Math.cos(theta) + 300,
+        y: r * Math.sin(p) * Math.sin(theta) + 300,
+        z: r * Math.cos(p),
+        s: 0.3 // Micro dust
+      });
     }
 
     return points;
@@ -87,41 +158,31 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
     let animationFrameId: number;
     let particles: any[] = [];
-    let horizonParticles: any[] = [];
-
-    const hCount = 30; // Further reduced (was 60)
+    let isMobile = window.innerWidth < 768;
 
     class Particle {
       x: number; y: number; vx: number; vy: number; size: number;
-      tx: number; ty: number; tz: number; // Added TZ for 3D depth
+      tx: number; ty: number; tz: number; 
       constructor(w: number, h: number, target: { x: number, y: number, z: number, s?: number }) {
         this.x = Math.random() * w; this.y = Math.random() * h;
         this.vx = (Math.random() - 0.5) * 2.2; this.vy = (Math.random() - 0.5) * 2.2;
-        this.size = (0.8 + Math.random() * 1.5) * (target.s || 1); // Much bigger, bold particles
+        this.size = (0.8 + Math.random() * 1.5) * (target.s || 1);
         this.tx = target.x; this.ty = target.y;
-        this.tz = target.z; 
+        this.tz = target.z;
       }
       update(w: number, h: number, forming: boolean, rotation: number) {
         if (forming) {
-          // TRUE Y-AXIS 3D ROTATION (Left to Right)
           const centerX = w * 0.75;
           const dx = this.tx - centerX;
           const dz = this.tz;
-
           const cos = Math.cos(rotation);
           const sin = Math.sin(rotation);
-
-          // Rotation Matrix Y-Axis
           const rx = (dx * cos + dz * sin) + centerX;
           const rz = -dx * sin + dz * cos;
-
-          // Perspective scaling based on depth
-          const perspective = (rz + 200) / 400; // 0.25 to 0.75 range
+          const perspective = (rz + 200) / 400;
           const targetSize = this.size * (0.8 + perspective * 0.6);
-
           this.x += (rx - this.x) * 0.12 + Math.sin(Date.now() * 0.0035 + this.ty) * 0.45;
           this.y += (this.ty - this.y) * 0.12 + Math.cos(Date.now() * 0.0035 + this.tx) * 0.45;
-
           return { alpha: 0.1 + perspective * 0.8, size: targetSize };
         } else {
           this.x += this.vx; this.y += this.vy;
@@ -133,28 +194,27 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     }
 
     const init = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      const w = canvas.width, h = canvas.height;
-      particles = []; horizonParticles = [];
+      if (!canvas) return;
+      canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
+      canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+      isMobile = w < 768;
+      particles = [];
 
-      const pCountLocal = targetPoints.length;
+      const densityModifier = isMobile ? 0.4 : 1;
+      const pCountLocal = Math.floor(targetPoints.length * densityModifier);
+
       for (let i = 0; i < pCountLocal; i++) {
         const target = targetPoints[i];
-
-        // Scale targets to screen space
         const realTarget = {
-          x: ((target.x / 600) - 0.5) * 400 + (w * 0.75),
-          y: ((target.y / 600) - 0.5) * 400 + (h * 0.5),
-          z: target.z, // Direct Z from spherical distribution
-          s: target.s // Passed size modifier
+          x: ((target.x / 600) - 0.5) * (isMobile ? 300 : 400) + (w * (isMobile ? 0.5 : 0.75)),
+          y: ((target.y / 600) - 0.5) * (isMobile ? 300 : 400) + (h * (isMobile ? 0.4 : 0.5)),
+          z: target.z,
+          s: target.s
         };
-
-        const p = new Particle(w, h, realTarget);
-        particles.push(p);
-      }
-      for (let i = 0; i < hCount; i++) {
-        horizonParticles.push({ x: (i / hCount) * w, baseY: h * 0.8, offset: Math.random() * Math.PI * 2 });
+        particles.push(new Particle(w, h, realTarget));
       }
     };
 
@@ -168,7 +228,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       // DELETED: Unprofessional Horizon Ocean Code. Clean 3D is vastly superior.
 
       // 2. Dynamic Adaptive Node Connections
-      const maxConnDist = isForming ? 70 : 120; // Reduced for performance optimization
+      const maxConnDist = isForming ? 45 : 120; 
       const connDistSq = maxConnDist * maxConnDist;
 
       ctx.fillStyle = isForming ? 'rgba(0, 242, 255, 1)' : 'rgba(0, 242, 255, 0.5)';
@@ -178,18 +238,25 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
         ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
         ctx.globalAlpha = 1.0;
 
+        // Skip connections for micro-dust to keep the "Atlas Network" crisp
+        if (isForming && p.size < 1) return;
+
         let connections = 0;
+        const maxConnections = isForming ? 1 : 2; 
+
         // Hyper-optimized loop: strict culling guarantees 60 FPS
-        for (let j = i + 1; j < Math.min(i + 10, particles.length); j++) {
-          if (connections > 2) break; // Strict connection limit for lightning-fast render
+        for (let j = i + 1; j < Math.min(i + 15, particles.length); j++) {
+          if (connections >= maxConnections) break;
           const p2 = particles[j];
+          if (isForming && p2.size < 1) continue;
+
           const dx = p.x - p2.x; const dy = p.y - p2.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < connDistSq) {
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
-            // Ultra-simplified opacity
-            ctx.strokeStyle = `rgba(0, 242, 255, ${0.15})`;
-            ctx.lineWidth = 0.6;
+            // Ultra-simplified opacity for a cleaner "Neural" look
+            ctx.strokeStyle = `rgba(0, 242, 255, ${isForming ? 0.08 : 0.15})`;
+            ctx.lineWidth = isForming ? 0.4 : 0.6;
             ctx.stroke();
             connections++;
           }
@@ -281,25 +348,53 @@ export default function Home() {
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const heroRef = useRef<HTMLElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    
+    // Professional "Cache Clear" / Versioning Logic
+    const APP_VERSION = "2.1.0";
+    const storedVersion = localStorage.getItem("zrai_version");
+    if (storedVersion !== APP_VERSION) {
+      console.log("New version detected, clearing stale cache...");
+      localStorage.clear();
+      sessionStorage.clear();
+      localStorage.setItem("zrai_version", APP_VERSION);
+    }
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setShowNav(false);
-      } else {
+      
+      // Always show at the very top
+      if (currentScrollY < 50) {
         setShowNav(true);
+      } else {
+        // Hide if scrolling down, show if scrolling up
+        if (currentScrollY > lastScrollY) {
+          setShowNav(false);
+        } else {
+          setShowNav(true);
+        }
       }
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    const handleMouseMove = (e: MouseEvent) => {
+      // If mouse is near top (top 80px), show nav
+      if (e.clientY < 80) {
+        setShowNav(true);
+      }
+    };
 
-  useEffect(() => {
-    // Neural core is now permanent as requested
-  }, []);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [lastScrollY]);
 
   const handleHeroMouseMove = (e: React.MouseEvent) => {
     if (heroRef.current) {
@@ -307,6 +402,8 @@ export default function Home() {
       setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top, active: true });
     }
   };
+
+  if (!mounted) return <div style={{ background: '#020617', minHeight: '100vh' }} />;
 
   return (
     <div className={styles.page}>
@@ -318,13 +415,9 @@ export default function Home() {
             <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.4, transition: '0.3s', color: locale === "en" ? 'var(--primary)' : 'inherit' }}>ENG</span>
           </div>
 
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <a href="#" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', textDecoration: 'none', transition: '0.3s' }}>
-              {t.nav.login}
-            </a>
-            <button className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '8px', background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', boxShadow: 'none' }}>
-              {t.nav.register}
-            </button>
+          <div className={styles.navActions}>
+            <button className={styles.loginBtn}>{t.nav.login}</button>
+            <button className={styles.registerBtn}>{t.nav.register}</button>
           </div>
         </div>
       </nav>
@@ -335,15 +428,17 @@ export default function Home() {
         </div>
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
-          <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
-          <p className={styles.reveal} style={{ animationDelay: '0.1s', maxWidth: '550px', margin: '0 0 2.5rem' }}>{t.hero.description}</p>
-          <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.2s', zIndex: 100, position: 'relative' }}>
-            <button className="btn-primary" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
-            <button className="btn-outline" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
+          <div className={styles.heroText}>
+            <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
+            <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.hero.description}</p>
+            <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'inherit' }}>
+              <button className="btn-primary" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
+              <button className="btn-outline" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
+            </div>
           </div>
-        </div>
-        <div className={styles.heroImageContainer} style={{ overflow: 'visible' }}>
-          <NeuralSynapse isForming={isForming} />
+          <div className={styles.heroImageContainer}>
+            <NeuralSynapse isForming={isForming} />
+          </div>
         </div>
       </header>
 
@@ -395,6 +490,7 @@ export default function Home() {
             className={styles.projectSearchInput}
             value={projectSearch}
             onChange={(e) => setProjectSearch(e.target.value)}
+            suppressHydrationWarning
             style={{
               width: '100%',
               padding: '1.2rem 1.5rem 1.2rem 4rem',
@@ -438,90 +534,61 @@ export default function Home() {
 
 
 
-      <footer className={styles.footerMain}>
-        <div className={styles.footerGrid}>
-          <div className={styles.footerCol}>
+      <footer className={styles.footerMega}>
+        <div className={styles.footerGlow} />
+        <section className={styles.footerTop}>
+          <div className={styles.reveal}>
+            <h2 className={styles.footerCtaTitle}>{locale === 'es' ? '¿Listo para evolucionar?' : 'Ready to evolve?'}</h2>
+            <p className={styles.footerCtaDesc}>{locale === 'es' ? 'Hablemos sobre tu próximo proyecto de IA.' : "Let's talk about your next AI project."}</p>
+          </div>
+          <button className="btn-primary" style={{ padding: '1rem 3rem' }}>{locale === 'es' ? 'Empezar ahora' : 'Get Started'}</button>
+        </section>
+
+        <div className={styles.footerMainGrid}>
+          <div className={styles.footerInfo}>
             <ZraiBrand />
-            <p style={{ maxWidth: '300px' }}>
+            <p className={styles.footerBrandDesc}>
               {locale === 'es'
-                ? 'Transformando negocios tradicionales en potencias digitales mediante soluciones de búsqueda inteligente y automatización SaaS de alto rendimiento.'
-                : 'Transforming traditional businesses into digital powerhouses through intelligent search solutions and high-performance SaaS automation.'}
+                ? 'Liderando la vanguardia tecnológica con soluciones inteligentes que redefinen lo posible.'
+                : 'Leading the technological vanguard with intelligent solutions that redefine what is possible.'}
             </p>
+            <div className={styles.footerSocialsList}>
+              <a href="#" className={styles.footerSocialLink}>IN</a>
+              <a href="#" className={styles.footerSocialLink}>X</a>
+              <a href="#" className={styles.footerSocialLink}>GH</a>
+            </div>
           </div>
 
-          <div className={styles.footerCol}>
-            <h4>{locale === 'es' ? 'Navegación' : 'Navigation'}</h4>
-            <ul className={styles.footerLinkList}>
-              <li><a href="#hero">{locale === 'es' ? 'Inicio' : 'Home'}</a></li>
-              <li><a href="#services">{locale === 'es' ? 'Servicios' : 'Services'}</a></li>
-              <li><a href="#process">{locale === 'es' ? 'Proceso' : 'Process'}</a></li>
-              <li><a href="#contact">{locale === 'es' ? 'Contacto' : 'Contact'}</a></li>
-            </ul>
+          <div className={styles.footerLinksBlock}>
+            <h4>{locale === 'es' ? 'Compañía' : 'Company'}</h4>
+            <a href="#hero">{locale === 'es' ? 'Sobre Nosotros' : 'About'}</a>
+            <a href="#services">{locale === 'es' ? 'Soluciones' : 'Solutions'}</a>
+            <a href="#projects">{locale === 'es' ? 'Trabajos' : 'Works'}</a>
           </div>
 
-          <div className={styles.footerCol}>
+          <div className={styles.footerLinksBlock}>
             <h4>{locale === 'es' ? 'Soporte' : 'Support'}</h4>
-            <ul className={styles.footerLinkList}>
-              <li><a href="#">{locale === 'es' ? 'Documentación' : 'Documentation'}</a></li>
-              <li><a href="#">{locale === 'es' ? 'Privacidad' : 'Privacy Policy'}</a></li>
-              <li><a href="#">{locale === 'es' ? 'Términos' : 'Terms of Service'}</a></li>
-            </ul>
+            <a href="#">{locale === 'es' ? 'Consultoría' : 'Consulting'}</a>
+            <a href="#">{locale === 'es' ? 'Legal' : 'Legal'}</a>
+            <a href="#">API</a>
           </div>
 
-          <div className={styles.footerCol}>
-            <h4>{locale === 'es' ? 'Nueva Consulta' : 'New Inquiry'}</h4>
-            {contactStatus === 'success' ? (
-              <div style={{ background: 'rgba(45, 212, 191, 0.1)', border: '1px solid rgba(45, 212, 191, 0.2)', padding: '1.5rem', borderRadius: '12px', color: '#2dd4bf', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                {locale === 'es'
-                  ? '¡Mensaje enviado con éxito! Nuestro sistema de IA está analizando tu caso y te contactaremos en menos de 24hs.'
-                  : 'Message sent successfully! Our AI system is analyzing your case and we will contact you within 24 hours.'}
-              </div>
-            ) : (
-              <form className={styles.footerContactForm} onSubmit={async (e) => {
-                e.preventDefault();
-                setContactStatus('loading');
-                const form = e.currentTarget;
-                const email = (form.elements[0] as HTMLInputElement).value;
-                const message = (form.elements[1] as HTMLTextAreaElement).value;
-
-                try {
-                  const res = await fetch('/api/contact', {
-                    method: 'POST',
-                    body: JSON.stringify({ email, message }),
-                    headers: { 'Content-Type': 'application/json' }
-                  });
-                  if (res.ok) {
-                    setContactStatus('success');
-                    form.reset();
-                  } else {
-                    setContactStatus('error');
-                  }
-                } catch (err) {
-                  setContactStatus('error');
-                }
-              }}>
-                <input type="email" required placeholder={locale === 'es' ? 'Tu email corporativo' : 'Corporate email'} className={styles.footerInput} />
-                <textarea required placeholder={locale === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help?'} className={`${styles.footerInput} ${styles.footerTextarea}`}></textarea>
-                <button type="submit" className="btn-primary" style={{ padding: '0.8rem' }} disabled={contactStatus === 'loading'}>
-                  {contactStatus === 'loading'
-                    ? (locale === 'es' ? 'Enviando...' : 'Sending...')
-                    : (locale === 'es' ? 'Enviar Mensaje' : 'Send Message')}
-                </button>
-                {contactStatus === 'error' && <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.5rem' }}>{locale === 'es' ? 'Error al enviar. Intente de nuevo.' : 'Failed to send. Try again.'}</p>}
-              </form>
-            )}
+          <div className={styles.footerNewsletter}>
+            <h4>Newsletter</h4>
+            <div className={styles.newsletterInputWrap}>
+              <input type="email" placeholder="email@agency.com" suppressHydrationWarning />
+              <button>→</button>
+            </div>
           </div>
         </div>
 
-        <div className={styles.footerBottom}>
-          <p>© 2026 TECHLIFE. {locale === 'es' ? 'Todos los derechos reservados.' : 'All rights reserved.'}</p>
-          <div className={styles.socialLinks}>
-            <a href="https://linkedin.com" className={styles.socialIcon} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://github.com/Lr-26" className={styles.socialIcon} target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://twitter.com" className={styles.socialIcon} target="_blank" rel="noopener noreferrer">Twitter</a>
-          </div>
+        <div className={styles.footerCopyright}>
+          <p>© 2026 Z-RAI. {locale === 'es' ? 'Todos los derechos reservados.' : 'All rights reserved.'}</p>
         </div>
       </footer>
+
+      {/* --- AI CHATBOT SYSTEM --- */}
+      <ChatBot locale={locale} />
     </div>
   );
 }

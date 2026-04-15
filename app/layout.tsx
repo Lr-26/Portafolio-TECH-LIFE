@@ -33,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${outfit.variable}`}>
-       <body style={{ margin: 0 }}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${outfit.variable}`} suppressHydrationWarning>
+       <body style={{ margin: 0 }} suppressHydrationWarning>
         <div className="bg-glow"></div>
         <LanguageProvider>
           {children}
