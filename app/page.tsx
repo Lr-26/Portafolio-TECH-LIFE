@@ -172,7 +172,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       }
       update(w: number, h: number, forming: boolean, rotation: number) {
         if (forming) {
-          const centerX = w * 0.75;
+          const centerX = w * 0.5;
           const dx = this.tx - centerX;
           const dz = this.tz;
           const cos = Math.cos(rotation);
@@ -209,8 +209,8 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       for (let i = 0; i < pCountLocal; i++) {
         const target = targetPoints[i];
         const realTarget = {
-          x: ((target.x / 600) - 0.5) * (isMobile ? 300 : 400) + (w * (isMobile ? 0.5 : 0.75)),
-          y: ((target.y / 600) - 0.5) * (isMobile ? 300 : 400) + (h * (isMobile ? 0.4 : 0.5)),
+          x: ((target.x / 600) - 0.5) * (isMobile ? 300 : 400) + (w * 0.5),
+          y: ((target.y / 600) - 0.5) * (isMobile ? 300 : 400) + (h * 0.5),
           z: target.z,
           s: target.s
         };
@@ -311,8 +311,16 @@ const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
           {cables.map(c => <path key={`bg-${c.id}`} d={c.d} stroke="var(--primary)" strokeWidth="1" />)}
         </g>
         <g className={styles.corePulse}>
-          <circle cx="300" cy="300" r={isForming ? 75 : 45} fill="var(--primary)" opacity={isForming ? 0.35 : 0.15} style={{ transition: 'all 1s ease' }} />
-          <circle cx="300" cy="300" r={isForming ? 25 : 15} fill="#fff" opacity="0.9" style={{ filter: 'blur(3.5px)', transition: 'all 1s ease' }} />
+          <circle cx="300" cy="300" r={isForming ? 85 : 55} fill="var(--primary)" opacity={isForming ? 0.25 : 0.1} style={{ transition: 'all 1s ease', filter: 'blur(10px)' }} />
+          <circle cx="300" cy="300" r={isForming ? 40 : 25} fill="var(--primary)" opacity={isForming ? 0.4 : 0.2} style={{ transition: 'all 1s ease', filter: 'blur(5px)' }} />
+          <defs>
+            <radialGradient id="coreGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#fff" stopOpacity="1" />
+              <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="300" cy="300" r={isForming ? 22 : 14} fill="url(#coreGrad)" style={{ transition: 'all 1s ease', filter: 'drop-shadow(0 0 15px var(--primary))' }} />
         </g>
         <g stroke="var(--primary)" strokeWidth="2.8" className={styles.runningLights}>
           {cables.filter((_, i) => i % 3 === 0).map((c) => (
@@ -423,20 +431,20 @@ export default function Home() {
       </nav>
 
       <header id="hero" className={styles.hero} ref={heroRef} onMouseMove={handleHeroMouseMove} onMouseLeave={() => setMousePos(prev => ({ ...prev, active: false }))}>
-        <div className={styles.particleOverlay}>
-          <ParticleEngine mousePos={mousePos} isForming={isForming} />
-        </div>
-        <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
             <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
             <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.hero.description}</p>
             <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'inherit' }}>
-              <button className="btn-primary" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
-              <button className="btn-outline" style={{ padding: '0.8rem 1.75rem' }} onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
+              <button className="btn-primary" onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
+              <button className="btn-outline" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
             </div>
           </div>
           <div className={styles.heroImageContainer}>
+            <div className={styles.heroGlow} />
+            <div className={styles.particleContainer}>
+              <ParticleEngine mousePos={mousePos} isForming={isForming} />
+            </div>
             <NeuralSynapse isForming={isForming} />
           </div>
         </div>
