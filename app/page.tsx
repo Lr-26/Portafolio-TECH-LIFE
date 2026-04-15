@@ -81,62 +81,68 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
   // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
   const targetPoints = useMemo(() => {
-    const points: { x: number, y: number, z: number, s?: number }[] = [];
-    const pCount = 1000;
+    const points: { x: number, y: number, z: number, s?: number } [] = [];
+    const pCount = 1500; // Even higher density for realism
 
-    // 1. Central "Power Core" Circle/Sphere (350 points)
-    const coreCount = 350;
-    const coreRadius = 45; 
-    for (let i = 0; i < coreCount; i++) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = u * 2 * Math.PI;
-        const phi = Math.acos(2 * v - 1);
-        const r = coreRadius * Math.pow(Math.random(), 0.5); // Dense center
-        points.push({
-            x: r * Math.sin(phi) * Math.cos(theta) + 300,
-            y: r * Math.sin(phi) * Math.sin(theta) + 300,
-            z: r * Math.cos(phi),
-            s: 1.4 // Slightly bigger core particles
-        });
-    }
+    // Scaled for the 800px coordinate system
+    const scale = 5.5; 
+    const offsetX = 300 - (38 * scale / 2) - 80; 
+    const offsetY = 300 - (40 * scale / 2);
 
-    // 2. Three Majestic Orbital Rings (500 points total) - SCALED UP
-    const rings = [
-        { r: 110, count: 150, tiltX: 0.1, tiltZ: 0.1 },
-        { r: 160, count: 150, tiltX: 0.8, tiltZ: -0.3 },
-        { r: 210, count: 200, tiltX: -0.5, tiltZ: 0.8 }
+    const addLine = (x1: number, y1: number, x2: number, y2: number, count: number) => {
+        for (let i = 0; i < count; i++) {
+            const t = i / count;
+            const px = x1 + (x2 - x1) * t;
+            const py = y1 + (y2 - y1) * t;
+            const pz = (Math.random() - 0.5) * 25;
+            points.push({ x: px * scale + offsetX, y: py * scale + offsetY, z: pz, s: 0.7 });
+        }
+    };
+
+    const addArc = (cx: number, cy: number, r: number, startAngle: number, endAngle: number, count: number) => {
+        for (let i = 0; i < count; i++) {
+            const t = i / count;
+            const angle = startAngle + (endAngle - startAngle) * t;
+            const px = cx + Math.cos(angle) * r;
+            const py = cy + Math.sin(angle) * r;
+            const pz = (Math.random() - 0.5) * 25;
+            points.push({ x: px * scale + offsetX, y: py * scale + offsetY, z: pz, s: 0.7 });
+        }
+    };
+
+    // HIGH DENSITY SCULPTING "Z"
+    addLine(0, 0, 40, 0, 150);      
+    addLine(40, 0, 15, 35, 200);   
+    addLine(15, 35, 40, 35, 150);   
+
+    // HIGH DENSITY SCULPTING "R"
+    addLine(55, 0, 55, 40, 200);    
+    addArc(75, 12, 12.5, -Math.PI/2, Math.PI/2, 200); 
+    addLine(55, 0, 75, 0, 80);      
+    addLine(55, 24, 75, 24, 80);    
+    addLine(75, 24, 98, 40, 120);    
+
+    // SHINING NEURAL NODES (The ones from SVG)
+    const nodes = [
+        {x: 20, y: 15}, {x: 35, y: 15}, {x: 27.5, y: 25}, {x: 20, y: 35}, {x: 35, y: 35}
     ];
-
-    rings.forEach(ring => {
-        for (let i = 0; i < ring.count; i++) {
-            const angle = (i / ring.count) * Math.PI * 2;
-            let px = Math.cos(angle) * ring.r;
-            let py = 0;
-            let pz = Math.sin(angle) * ring.r;
-
-            // Apply tilts
-            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
-            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
-            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
-            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
-
-            points.push({
-                x: x2 + 300,
-                y: y2 + 300,
-                z: z1,
-                s: 0.7
+    nodes.forEach(n => {
+        for(let i=0; i<30; i++) {
+            points.push({ 
+                x: n.x * scale + offsetX, 
+                y: n.y * scale + offsetY, 
+                z: (Math.random()-0.5)*10, 
+                s: 2.5 
             });
         }
     });
 
-    // 3. Ambient Connections nodes (for network effect)
     while (points.length < pCount) {
         points.push({
             x: Math.random() * 600,
             y: Math.random() * 600,
-            z: (Math.random() - 0.5) * 100,
-            s: 0.3
+            z: (Math.random() - 0.5) * 150,
+            s: 0.2
         });
     }
 
@@ -349,13 +355,20 @@ export default function Home() {
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const heroRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
     
     // Professional "Cache Clear" / Versioning Logic
-    const APP_VERSION = "2.1.0";
+    const APP_VERSION = "2.4.0";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
       console.log("New version detected, clearing stale cache...");
