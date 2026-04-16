@@ -84,72 +84,30 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     const points: { x: number, y: number, z: number, s?: number } [] = [];
     const pCount = 1500;
 
-    // --- FORMING A "NEURAL CORE" (3D ICOSAHEDRON FRAME) ---
-    // Phi for icosahedron vertices
-    const phi = (1 + Math.sqrt(5)) / 2;
-    const vertices = [
-        [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
-        [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
-        [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1]
-    ];
-
-    const radius = 180;
-    const scale = radius;
-
-    // Helper to add lines between vertices
-    const addLine = (v1: number[], v2: number[], count: number) => {
+    // Helper for spherical distribution (Fibonacci Sphere)
+    const addSphere = (radius: number, count: number, dotSize: number) => {
+        const phi = Math.PI * (3 - Math.sqrt(5));
         for (let i = 0; i < count; i++) {
-            const t = i / count;
+            const y = 1 - (i / (count - 1)) * 2;
+            const r = Math.sqrt(1 - y * y);
+            const theta = phi * i;
             points.push({
-                x: (v1[0] + (v2[0] - v1[0]) * t) * scale + 300,
-                y: (v1[1] + (v2[1] - v1[1]) * t) * scale + 300,
-                z: (v1[2] + (v2[2] - v1[2]) * t) * scale,
-                s: 0.9
+                x: Math.cos(theta) * r * radius + 300,
+                y: y * radius + 300,
+                z: Math.sin(theta) * r * radius,
+                s: dotSize
             });
         }
     };
 
-    // Connect vertices to form the frame
-    for (let i = 0; i < vertices.length; i++) {
-        for (let j = i + 1; j < vertices.length; j++) {
-            const dx = vertices[i][0] - vertices[j][0];
-            const dy = vertices[i][1] - vertices[j][1];
-            const dz = vertices[i][2] - vertices[j][2];
-            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-            // Icosahedron edge length is 2. The vertices are normalized.
-            // Distance between neighbors is exactly 2.
-            if (dist < 2.1) {
-                addLine(vertices[i], vertices[j], 40);
-            }
-        }
-    }
+    // 1. Dense Power Core (400 points)
+    addSphere(30, 400, 1.5);
 
-    // --- INNER QUANTUM NUCLEUS ---
-    const coreCount = 400;
-    for (let i = 0; i < coreCount; i++) {
-        const u = Math.random(); const v = Math.random();
-        const theta = u * 2 * Math.PI; const phi_angle = Math.acos(2 * v - 1);
-        const r = 40 * Math.pow(Math.random(), 0.5);
-        points.push({
-            x: r * Math.sin(phi_angle) * Math.cos(theta) + 300,
-            y: r * Math.sin(phi_angle) * Math.sin(theta) + 300,
-            z: r * Math.cos(phi_angle),
-            s: 1.5
-        });
-    }
+    // 2. Structural Mid Shell (600 points)
+    addSphere(120, 600, 0.8);
 
-    // Ambient floating data stream
-    while (points.length < pCount) {
-        const r = 250 + Math.random() * 50;
-        const theta = Math.random() * 2 * Math.PI;
-        const p_z = (Math.random() - 0.5) * 400;
-        points.push({
-            x: Math.cos(theta) * r + 300,
-            y: Math.sin(theta) * r + 300,
-            z: p_z,
-            s: 0.3
-        });
-    }
+    // 3. Ambient Outer Aura (500 points)
+    addSphere(220, 500, 0.4);
 
     return points;
   }, []);
@@ -373,7 +331,7 @@ export default function Home() {
     setMounted(true);
     
     // Professional "Cache Clear" / Versioning Logic
-    const APP_VERSION = "2.5.0";
+    const APP_VERSION = "2.6.0";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
       console.log("New version detected, clearing stale cache...");
