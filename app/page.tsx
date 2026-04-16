@@ -82,67 +82,72 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
   // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
   const targetPoints = useMemo(() => {
     const points: { x: number, y: number, z: number, s?: number } [] = [];
-    const pCount = 1500; // Even higher density for realism
+    const pCount = 1500;
 
-    // Scaled for the 800px coordinate system
-    const scale = 5.5; 
-    const offsetX = 300 - (38 * scale / 2) - 80; 
-    const offsetY = 300 - (40 * scale / 2);
-
-    const addLine = (x1: number, y1: number, x2: number, y2: number, count: number) => {
-        for (let i = 0; i < count; i++) {
-            const t = i / count;
-            const px = x1 + (x2 - x1) * t;
-            const py = y1 + (y2 - y1) * t;
-            const pz = (Math.random() - 0.5) * 25;
-            points.push({ x: px * scale + offsetX, y: py * scale + offsetY, z: pz, s: 0.7 });
-        }
-    };
-
-    const addArc = (cx: number, cy: number, r: number, startAngle: number, endAngle: number, count: number) => {
-        for (let i = 0; i < count; i++) {
-            const t = i / count;
-            const angle = startAngle + (endAngle - startAngle) * t;
-            const px = cx + Math.cos(angle) * r;
-            const py = cy + Math.sin(angle) * r;
-            const pz = (Math.random() - 0.5) * 25;
-            points.push({ x: px * scale + offsetX, y: py * scale + offsetY, z: pz, s: 0.7 });
-        }
-    };
-
-    // HIGH DENSITY SCULPTING "Z"
-    addLine(0, 0, 40, 0, 150);      
-    addLine(40, 0, 15, 35, 200);   
-    addLine(15, 35, 40, 35, 150);   
-
-    // HIGH DENSITY SCULPTING "R"
-    addLine(55, 0, 55, 40, 200);    
-    addArc(75, 12, 12.5, -Math.PI/2, Math.PI/2, 200); 
-    addLine(55, 0, 75, 0, 80);      
-    addLine(55, 24, 75, 24, 80);    
-    addLine(75, 24, 98, 40, 120);    
-
-    // SHINING NEURAL NODES (The ones from SVG)
-    const nodes = [
-        {x: 20, y: 15}, {x: 35, y: 15}, {x: 27.5, y: 25}, {x: 20, y: 35}, {x: 35, y: 35}
+    // --- FORMING A "NEURAL CORE" (3D ICOSAHEDRON FRAME) ---
+    // Phi for icosahedron vertices
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const vertices = [
+        [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
+        [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
+        [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1]
     ];
-    nodes.forEach(n => {
-        for(let i=0; i<30; i++) {
-            points.push({ 
-                x: n.x * scale + offsetX, 
-                y: n.y * scale + offsetY, 
-                z: (Math.random()-0.5)*10, 
-                s: 2.5 
+
+    const radius = 180;
+    const scale = radius;
+
+    // Helper to add lines between vertices
+    const addLine = (v1: number[], v2: number[], count: number) => {
+        for (let i = 0; i < count; i++) {
+            const t = i / count;
+            points.push({
+                x: (v1[0] + (v2[0] - v1[0]) * t) * scale + 300,
+                y: (v1[1] + (v2[1] - v1[1]) * t) * scale + 300,
+                z: (v1[2] + (v2[2] - v1[2]) * t) * scale,
+                s: 0.9
             });
         }
-    });
+    };
 
-    while (points.length < pCount) {
+    // Connect vertices to form the frame
+    for (let i = 0; i < vertices.length; i++) {
+        for (let j = i + 1; j < vertices.length; j++) {
+            const dx = vertices[i][0] - vertices[j][0];
+            const dy = vertices[i][1] - vertices[j][1];
+            const dz = vertices[i][2] - vertices[j][2];
+            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            // Icosahedron edge length is 2. The vertices are normalized.
+            // Distance between neighbors is exactly 2.
+            if (dist < 2.1) {
+                addLine(vertices[i], vertices[j], 40);
+            }
+        }
+    }
+
+    // --- INNER QUANTUM NUCLEUS ---
+    const coreCount = 400;
+    for (let i = 0; i < coreCount; i++) {
+        const u = Math.random(); const v = Math.random();
+        const theta = u * 2 * Math.PI; const phi_angle = Math.acos(2 * v - 1);
+        const r = 40 * Math.pow(Math.random(), 0.5);
         points.push({
-            x: Math.random() * 600,
-            y: Math.random() * 600,
-            z: (Math.random() - 0.5) * 150,
-            s: 0.2
+            x: r * Math.sin(phi_angle) * Math.cos(theta) + 300,
+            y: r * Math.sin(phi_angle) * Math.sin(theta) + 300,
+            z: r * Math.cos(phi_angle),
+            s: 1.5
+        });
+    }
+
+    // Ambient floating data stream
+    while (points.length < pCount) {
+        const r = 250 + Math.random() * 50;
+        const theta = Math.random() * 2 * Math.PI;
+        const p_z = (Math.random() - 0.5) * 400;
+        points.push({
+            x: Math.cos(theta) * r + 300,
+            y: Math.sin(theta) * r + 300,
+            z: p_z,
+            s: 0.3
         });
     }
 
@@ -368,7 +373,7 @@ export default function Home() {
     setMounted(true);
     
     // Professional "Cache Clear" / Versioning Logic
-    const APP_VERSION = "2.4.0";
+    const APP_VERSION = "2.5.0";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
       console.log("New version detected, clearing stale cache...");
