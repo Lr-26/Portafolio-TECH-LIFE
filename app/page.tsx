@@ -81,11 +81,11 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
 
   // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
   const targetPoints = useMemo(() => {
-    const points: { x: number, y: number, z: number, s?: number } [] = [];
-    const pCount = 1500;
+    const points: { x: number, y: number, z: number, s?: number, type?: 'core' | 'ring' | 'atm' } [] = [];
+    const pCount = 1200;
 
-    // Helper for spherical distribution (Fibonacci Sphere)
-    const addSphere = (radius: number, count: number, dotSize: number) => {
+    // 1. DENSE POWER CORE (BOLA) - 400 points
+    const addCore = (radius: number, count: number) => {
         const phi = Math.PI * (3 - Math.sqrt(5));
         for (let i = 0; i < count; i++) {
             const y = 1 - (i / (count - 1)) * 2;
@@ -95,19 +95,43 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
                 x: Math.cos(theta) * r * radius + 300,
                 y: y * radius + 300,
                 z: Math.sin(theta) * r * radius,
-                s: dotSize
+                s: 1.5,
+                type: 'core'
             });
         }
     };
+    addCore(45, 400);
 
-    // 1. Dense Power Core (400 points)
-    addSphere(30, 400, 1.5);
+    // 2. ORBITAL RINGS (AROS) - 450 points
+    const rings = [
+        { r: 120, count: 200, tiltX: 0.3, tiltZ: 0.2 },
+        { r: 160, count: 250, tiltX: 0.9, tiltZ: -0.4 }
+    ];
+    rings.forEach(ring => {
+        for (let i = 0; i < ring.count; i++) {
+            const angle = (i / ring.count) * Math.PI * 2;
+            let px = Math.cos(angle) * ring.r;
+            let py = 0;
+            let pz = Math.sin(angle) * ring.r;
+            // Tilt applied
+            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
+            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
+            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
+            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
+            points.push({ x: x2 + 300, y: y2 + 300, z: z1, s: 0.8, type: 'ring' });
+        }
+    });
 
-    // 2. Structural Mid Shell (600 points)
-    addSphere(120, 600, 0.8);
-
-    // 3. Ambient Outer Aura (500 points)
-    addSphere(220, 500, 0.4);
+    // 3. FLOATING ATMOSPHERE (EL AIRE) - 350 points
+    for (let i = 0; i < 350; i++) {
+        points.push({
+            x: Math.random() * 800 - 100,
+            y: Math.random() * 600,
+            z: (Math.random() - 0.5) * 500,
+            s: 0.3,
+            type: 'atm'
+        });
+    }
 
     return points;
   }, []);
@@ -190,7 +214,7 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       // DELETED: Unprofessional Horizon Ocean Code. Clean 3D is vastly superior.
 
       // 2. Dynamic Adaptive Node Connections
-      const maxConnDist = isForming ? 45 : 120; 
+      const maxConnDist = isForming ? 50 : 120; 
       const connDistSq = maxConnDist * maxConnDist;
 
       ctx.fillStyle = isForming ? 'rgba(0, 242, 255, 1)' : 'rgba(0, 242, 255, 0.5)';
@@ -200,27 +224,22 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
         ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
         ctx.globalAlpha = 1.0;
 
-        // Skip connections for micro-dust to keep the "Atlas Network" crisp
-        if (isForming && p.size < 1) return;
+        // Optimized connection logic for "Neural Web" effect
+        if (i % 2 === 0) { // Connect every 2nd particle to maintain 60FPS
+          for (let j = i + 1; j < Math.min(i + 12, particles.length); j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const d2 = dx * dx + dy * dy;
 
-        let connections = 0;
-        const maxConnections = isForming ? 1 : 2; 
-
-        // Hyper-optimized loop: strict culling guarantees 60 FPS
-        for (let j = i + 1; j < Math.min(i + 15, particles.length); j++) {
-          if (connections >= maxConnections) break;
-          const p2 = particles[j];
-          if (isForming && p2.size < 1) continue;
-
-          const dx = p.x - p2.x; const dy = p.y - p2.y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < connDistSq) {
-            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
-            // Ultra-simplified opacity for a cleaner "Neural" look
-            ctx.strokeStyle = `rgba(0, 242, 255, ${isForming ? 0.08 : 0.15})`;
-            ctx.lineWidth = isForming ? 0.4 : 0.6;
-            ctx.stroke();
-            connections++;
+            if (d2 < connDistSq) {
+              ctx.beginPath();
+              ctx.lineWidth = isForming ? 0.3 : 0.6;
+              ctx.strokeStyle = `rgba(0, 242, 255, ${isForming ? 0.08 : 0.15})`;
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
           }
         }
 
@@ -331,7 +350,7 @@ export default function Home() {
     setMounted(true);
     
     // Professional "Cache Clear" / Versioning Logic
-    const APP_VERSION = "2.6.0";
+    const APP_VERSION = "2.7.0";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
       console.log("New version detected, clearing stale cache...");
