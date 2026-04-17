@@ -7,27 +7,64 @@ import { useLanguage } from "./context/LanguageContext";
 /* --- NEW CHATBOT COMPONENT --- */
 const ChatBot = ({ locale }: { locale: string }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<{ type: 'bot' | 'user', text: string }[]>([
-    { type: 'bot', text: locale === 'es' ? '¡Hola! Soy tu asistente de Z-RAI. ¿En qué puedo ayudarte hoy?' : 'Hello! I am your Z-RAI assistant. How can I help you today?' }
+    { type: 'bot', text: locale === 'es' ? '¡Hola! Soy el asistente de Z-RAI. Estoy aquí para guiarte a través de nuestras capacidades de IA de vanguardia. ¿En qué puedo ayudarte?' : 'Hello! I am the Z-RAI assistant. I am here to guide you through our cutting-edge AI capabilities. How can I assist you?' }
   ]);
 
-  const quickQueries = locale === 'es' 
-    ? ['¿Qué servicios ofrecen?', '¿Cómo empezar un proyecto?', 'Ver portafolio'] 
-    : ['What services do you offer?', 'How to start a project?', 'View portfolio'];
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false);
+    }
+  };
 
   const handleQuery = (query: string) => {
+    if (!query.trim()) return;
+    const q = query.toLowerCase();
     setMessages(prev => [...prev, { type: 'user', text: query }]);
+    setInputValue('');
+    
     setTimeout(() => {
       let response = '';
-      if (query.includes('servicios') || query.includes('services')) {
-        response = locale === 'es' 
-          ? 'Desarrollamos sistemas de IA de próxima generación, automatización neuronal y arquitecturas escalables para la élite digital.'
-          : 'We develop next-generation AI systems, neural automation, and scalable architectures for the digital elite.';
-      } else {
+      
+      // Smart Intent Detection & Knowledge Base with Proactive Follow-ups
+      if (q.includes('servicio') || q.includes('service') || q.includes('hacen') || q.includes('do you do')) {
         response = locale === 'es'
-          ? 'Interesante consulta. El equipo de Z-RAI está listo para profundizar en tu visión. ¿Deseas agendar una reunión?'
-          : 'Interesting inquiry. The Z-RAI team is ready to dive into your vision. Would you like to schedule a meeting?';
+          ? 'En Z-RAI nos especializamos en tres pilares: Inteligencia de Datos, Automatización SaaS y Desarrollo de Interfaces de Élite. \n\n¿En qué área específica de tu negocio crees que la IA podría generar el mayor impacto ahora mismo?'
+          : 'At Z-RAI we specialize in three pillars: Data Intelligence, SaaS Automation, and Elite Interface development. \n\nIn which specific area of your business do you think AI could generate the greatest impact right now?';
+        setTimeout(() => scrollToSection('services'), 6000);
+      } 
+      else if (q.includes('proceso') || q.includes('process') || q.includes('como trabajan') || q.includes('how do you work')) {
+        response = locale === 'es'
+          ? 'Nuestro proceso es metódico: Descubrimiento, Arquitectura, Desarrollo y Optimización. \n\n¿Tienes un proyecto con una fecha de lanzamiento definida o estás en una etapa de exploración inicial?'
+          : 'Our process is methodical: Discovery, Architecture, Development, and Optimization. \n\nDo you have a project with a defined launch date or are you in an initial exploration stage?';
+        setTimeout(() => scrollToSection('process'), 6000);
       }
+      else if (q.includes('proyecto') || q.includes('project') || q.includes('portafolio') || q.includes('portfolio') || q.includes('trabajos') || q.includes('work')) {
+        response = locale === 'es'
+          ? 'Hemos desarrollado desde E-commerce de lujo hasta plataformas SaaS complejas. \n\n¿Buscas una solución para optimizar procesos internos o una plataforma centrada directamente en el usuario final?'
+          : 'We have developed everything from luxury E-commerce to complex SaaS platforms. \n\nAre you looking for a solution to optimize internal processes or a platform focused directly on the end user?';
+        setTimeout(() => scrollToSection('projects'), 5000);
+      }
+      else if (q.includes('contacto') || q.includes('contact') || q.includes('hablar') || q.includes('talk') || q.includes('reunion') || q.includes('meeting')) {
+        response = locale === 'es'
+          ? 'Podemos agendar una llamada de descubrimiento para profundizar en tu visión. \n\n¿Prefieres que conectemos por videollamada o prefieres una auditoría técnica inicial por correo?'
+          : 'We can schedule a discovery call to dive into your vision. \n\nWould you prefer a video call or an initial technical audit via email?';
+        setTimeout(() => scrollToSection('contact'), 2000);
+      }
+      else if (q.includes('quienes') || q.includes('who') || q.includes('zrai') || q.includes('empresa') || q.includes('company')) {
+        response = locale === 'es'
+          ? 'Z-RAI es una vanguardia tecnológica dedicada a redefinir lo posible mediante software de alto rendimiento. \n\n¿Tu empresa ya está utilizando alguna solución de IA o están buscando su primera implementación estratégica?'
+          : 'Z-RAI is a technological vanguard dedicated to redefining what is possible through high-performance software. \n\nIs your company already using an AI solution or are you looking for your first strategic implementation?';
+      }
+      else {
+        response = locale === 'es'
+          ? 'Entiendo tu punto. El equipo de Z-RAI siempre busca la excelencia técnica. \n\n¿Qué desafío tecnológico te ha traído hoy a nuestro portafolio?'
+          : 'I understand your point. The Z-RAI team always strives for technical excellence. \n\nWhat technological challenge has brought you to our portfolio today?';
+      }
+
       setMessages(prev => [...prev, { type: 'bot', text: response }]);
     }, 600);
   };
@@ -49,7 +86,7 @@ const ChatBot = ({ locale }: { locale: string }) => {
           <div className={styles.chatHeader}>
             <div className={styles.chatInfo}>
               <div className={styles.neuralStatus} />
-              <span className={styles.brandTitle}>Z-RAI NEURAL CORE</span>
+              <span className={styles.brandTitle}>Z-RAI</span>
             </div>
             <button onClick={() => setIsOpen(false)} className={styles.closeBtn}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -63,11 +100,17 @@ const ChatBot = ({ locale }: { locale: string }) => {
             ))}
           </div>
           <div className={styles.chatInputArea}>
-            <div className={styles.quickActionsContainer}>
-              {quickQueries.map((q, i) => (
-                <button key={i} onClick={() => handleQuery(q)} className={styles.quickActionBtn}>{q}</button>
-              ))}
-            </div>
+            <input 
+              type="text" 
+              className={styles.chatInput} 
+              placeholder={locale === 'es' ? 'Escribe tu respuesta...' : 'Type your answer...'}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleQuery(inputValue)}
+            />
+            <button className={styles.sendBtn} onClick={() => handleQuery(inputValue)}>
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+            </button>
           </div>
         </div>
       )}
@@ -75,66 +118,9 @@ const ChatBot = ({ locale }: { locale: string }) => {
   );
 };
 
-/* Ultimate 3D Wireframe Brain Particle Engine - Studio Quality */
-const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: number, active: boolean }, isForming: boolean }) => {
+/* Advanced Dual-Layer Neural Engine: 3D Core + Reactive Fluid Background */
+const ParticleEngine = ({ mousePos }: { mousePos: { x: number, y: number, active: boolean } }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // THE "ATLAS NETWORK" - Global AI Core with Orbital Data Rings
-  const targetPoints = useMemo(() => {
-    const points: { x: number, y: number, z: number, s?: number, type?: 'core' | 'ring' | 'atm' } [] = [];
-    const pCount = 1200;
-
-    // 1. DENSE POWER CORE (BOLA) - 400 points
-    const addCore = (radius: number, count: number) => {
-        const phi = Math.PI * (3 - Math.sqrt(5));
-        for (let i = 0; i < count; i++) {
-            const y = 1 - (i / (count - 1)) * 2;
-            const r = Math.sqrt(1 - y * y);
-            const theta = phi * i;
-            points.push({
-                x: Math.cos(theta) * r * radius + 300,
-                y: y * radius + 300,
-                z: Math.sin(theta) * r * radius,
-                s: 1.5,
-                type: 'core'
-            });
-        }
-    };
-    addCore(45, 400);
-
-    // 2. ORBITAL RINGS (AROS) - 450 points
-    const rings = [
-        { r: 120, count: 200, tiltX: 0.3, tiltZ: 0.2 },
-        { r: 160, count: 250, tiltX: 0.9, tiltZ: -0.4 }
-    ];
-    rings.forEach(ring => {
-        for (let i = 0; i < ring.count; i++) {
-            const angle = (i / ring.count) * Math.PI * 2;
-            let px = Math.cos(angle) * ring.r;
-            let py = 0;
-            let pz = Math.sin(angle) * ring.r;
-            // Tilt applied
-            const y1 = py * Math.cos(ring.tiltX) - pz * Math.sin(ring.tiltX);
-            const z1 = py * Math.sin(ring.tiltX) + pz * Math.cos(ring.tiltX);
-            const x2 = px * Math.cos(ring.tiltZ) - y1 * Math.sin(ring.tiltZ);
-            const y2 = px * Math.sin(ring.tiltZ) + y1 * Math.cos(ring.tiltZ);
-            points.push({ x: x2 + 300, y: y2 + 300, z: z1, s: 0.8, type: 'ring' });
-        }
-    });
-
-    // 3. FLOATING ATMOSPHERE (EL AIRE) - 350 points
-    for (let i = 0; i < 350; i++) {
-        points.push({
-            x: Math.random() * 800 - 100,
-            y: Math.random() * 600,
-            z: (Math.random() - 0.5) * 500,
-            s: 0.3,
-            type: 'atm'
-        });
-    }
-
-    return points;
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -143,39 +129,130 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
     if (!ctx) return;
 
     let animationFrameId: number;
-    let particles: any[] = [];
-    let isMobile = window.innerWidth < 768;
+    let coreParticles: CoreParticle[] = [];
+    let dnaParticles: DNAParticle[] = [];
+    let isMobile = window.innerWidth < 1024;
+    let rotationAngle = 0;
+    let pulse = 0;
+    let time = 0;
 
-    class Particle {
-      x: number; y: number; vx: number; vy: number; size: number;
-      tx: number; ty: number; tz: number; 
-      constructor(w: number, h: number, target: { x: number, y: number, z: number, s?: number }) {
-        this.x = Math.random() * w; this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 2.2; this.vy = (Math.random() - 0.5) * 2.2;
-        this.size = (0.8 + Math.random() * 1.5) * (target.s || 1);
-        this.tx = target.x; this.ty = target.y;
-        this.tz = target.z;
+    class CoreParticle {
+      x: number; y: number; baseSize: number;
+      tx: number; ty: number; tz: number;
+
+      constructor(w: number, h: number, radius: number, i: number, total: number) {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        const phi = Math.acos(-1 + (2 * i) / total);
+        const theta = Math.sqrt(total * Math.PI) * phi;
+        this.tx = radius * Math.cos(theta) * Math.sin(phi);
+        this.ty = radius * Math.sin(theta) * Math.sin(phi);
+        this.tz = radius * Math.cos(phi);
+        this.baseSize = Math.random() * 4 + 7;
       }
-      update(w: number, h: number, forming: boolean, rotation: number) {
-        if (forming) {
-          const centerX = w * 0.5;
-          const dx = this.tx - centerX;
-          const dz = this.tz;
-          const cos = Math.cos(rotation);
-          const sin = Math.sin(rotation);
-          const rx = (dx * cos + dz * sin) + centerX;
-          const rz = -dx * sin + dz * cos;
-          const perspective = (rz + 200) / 400;
-          const targetSize = this.size * (0.8 + perspective * 0.6);
-          this.x += (rx - this.x) * 0.12 + Math.sin(Date.now() * 0.0035 + this.ty) * 0.45;
-          this.y += (this.ty - this.y) * 0.12 + Math.cos(Date.now() * 0.0035 + this.tx) * 0.45;
-          return { alpha: 0.1 + perspective * 0.8, size: targetSize };
-        } else {
-          this.x += this.vx; this.y += this.vy;
-          if (this.x < 0 || this.x > w) this.vx *= -1;
-          if (this.y < 0 || this.y > h) this.vy *= -1;
-          return { alpha: 0.5, size: this.size };
+
+      update(w: number, h: number, mouse: { x: number, y: number, active: boolean }, rotation: number) {
+        const cos = Math.cos(rotation);
+        const sin = Math.sin(rotation);
+        const rx = this.tx * cos - this.tz * sin;
+        const rz = this.tx * sin + this.tz * cos;
+        const perspective = 400 / (400 + rz);
+        const finalX = (w * 0.5) + rx * perspective;
+        const finalY = (h * 0.5) + this.ty * perspective;
+        this.x += (finalX - this.x) * 0.08;
+        this.y += (finalY - this.y) * 0.08;
+        if (mouse.active) {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 150 * 150) {
+            const force = (150 - Math.sqrt(distSq)) / 150;
+            this.x += dx * force * 0.05;
+            this.y += dy * force * 0.05;
+          }
         }
+        return { opacity: 0.3 + perspective * 0.7, perspective };
+      }
+
+      draw(opacity: number, perspective: number) {
+        if (!ctx) return;
+        const size = this.baseSize * perspective;
+        const cx = this.x, cy = this.y;
+
+        // Matte-Sphere Shading (Realism over Light)
+        ctx.beginPath();
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, size);
+        const isAccent = this.tx % 6 > 0.5; // Significantly more Indigo (~90%), fewer Cyan
+        
+        if (isAccent) {
+          grad.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.4})`); // Duller core
+          grad.addColorStop(0.3, `rgba(67, 56, 202, ${opacity * 0.8})`); // Solid Indigo
+          grad.addColorStop(0.8, `rgba(30, 27, 75, ${opacity * 0.5})`);
+        } else {
+          grad.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.3})`);
+          grad.addColorStop(0.3, `rgba(8, 145, 178, ${opacity * 0.8})`); // Solid Cyan/Teal
+          grad.addColorStop(0.8, `rgba(8, 51, 68, ${opacity * 0.5})`);
+        }
+        grad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = grad;
+        ctx.arc(cx, cy, size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Subtle Specular Reflection (No Glow)
+        if (opacity > 0.5) {
+          ctx.beginPath();
+          ctx.arc(cx - size * 0.35, cy - size * 0.35, size * 0.06, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.2})`;
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    class DNAParticle {
+      x: number; y: number; z: number;
+      strand: number; angle: number;
+      baseY: number;
+
+      constructor(strand: number, index: number, total: number, w: number, h: number) {
+        this.strand = strand;
+        this.angle = (index / total) * Math.PI * 8; // Multiple loops
+        this.baseY = (index / total) * h;
+        this.x = 0; this.y = 0; this.z = 0;
+      }
+
+      update(t: number, w: number, h: number) {
+        const radius = isMobile ? 120 : 350; // Larger radius to ensure it's visible behind the core
+        const speed = 0.4;
+        const currentAngle = this.angle + t * speed + (this.strand * Math.PI);
+        
+        const tx = Math.cos(currentAngle) * radius;
+        const tz = Math.sin(currentAngle) * radius;
+        
+        const perspective = 600 / (600 + tz);
+        this.x = (w * 0.5) + tx * perspective;
+        this.y = this.baseY;
+        this.z = tz;
+
+        // Add some floating
+        this.y += Math.sin(t + this.angle) * 15;
+      }
+
+      draw(opacity: number) {
+        if (!ctx) return;
+        const size = (this.z + 200) / 120 + 0.8;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
+        
+        // Matte DNA strands (Boosted Visibility)
+        if (this.strand === 0) {
+          ctx.fillStyle = `rgba(0, 242, 255, ${opacity * 0.8})`; 
+        } else {
+          ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.9})`;
+        }
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
     }
 
@@ -184,134 +261,123 @@ const ParticleEngine = ({ mousePos, isForming }: { mousePos: { x: number, y: num
       canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
       canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
       ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
-      
       const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      isMobile = w < 768;
-      particles = [];
+      isMobile = w < 1024;
 
-      const densityModifier = isMobile ? 0.4 : 1;
-      const pCountLocal = Math.floor(targetPoints.length * densityModifier);
+      coreParticles = [];
+      const coreCount = isMobile ? 16 : 24; // Rebalanced for structural clarity
+      const coreRadius = isMobile ? 120 : 190; // Large radius for crisp separation
+      for (let i = 0; i < coreCount; i++) {
+        // Diversified 'Ultra-Large' molecule sizes (range 15 to 60) for depth
+        const p = new CoreParticle(w, h, coreRadius, i, coreCount);
+        p.baseSize = Math.random() * 45 + 15;
+        coreParticles.push(p);
+      }
 
-      for (let i = 0; i < pCountLocal; i++) {
-        const target = targetPoints[i];
-        const realTarget = {
-          x: ((target.x / 600) - 0.5) * (isMobile ? 300 : 400) + (w * 0.5),
-          y: ((target.y / 600) - 0.5) * (isMobile ? 300 : 400) + (h * 0.5),
-          z: target.z,
-          s: target.s
-        };
-        particles.push(new Particle(w, h, realTarget));
+      dnaParticles = [];
+      const dnaCount = isMobile ? 50 : 100; // More particles for better definition
+      for (let i = 0; i < dnaCount; i++) {
+        dnaParticles.push(new DNAParticle(0, i, dnaCount, w, h));
+        dnaParticles.push(new DNAParticle(1, i, dnaCount, w, h));
       }
     };
 
-    const animate = (time: number) => {
+    const animate = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const w = canvas.width, h = canvas.height;
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+      const cx = w * 0.5, cy = h * 0.5;
 
-      const rotation = isForming ? (time * 0.0001) : 0; // Much slower, majestic rotation
+      rotationAngle += 0.01;
+      pulse += 0.015;
+      time += 0.02;
+      const pulseVal = Math.sin(pulse) * 0.15 + 0.85;
 
-      // DELETED: Unprofessional Horizon Ocean Code. Clean 3D is vastly superior.
+      // Draw Neural DNA Helix Background
+      ctx.lineWidth = 1;
+      for (let i = 0; i < dnaParticles.length; i += 2) {
+        const p1 = dnaParticles[i];
+        const p2 = dnaParticles[i + 1];
+        
+        p1.update(time, w, h);
+        p2.update(time, w, h);
 
-      // 2. Dynamic Adaptive Node Connections
-      const maxConnDist = isForming ? 50 : 120; 
-      const connDistSq = maxConnDist * maxConnDist;
+        const avgZ = (p1.z + p2.z) * 0.5;
+        const opacity = (avgZ + 350) / 700 * 0.5; // Boosted opacity logic
 
-      ctx.fillStyle = isForming ? 'rgba(0, 242, 255, 1)' : 'rgba(0, 242, 255, 0.5)';
-      particles.forEach((p, i) => {
-        const { alpha, size } = p.update(w, h, isForming, rotation);
-        ctx.globalAlpha = alpha;
-        ctx.beginPath(); ctx.arc(p.x, p.y, size, 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = 1.0;
+        p1.draw(opacity);
+        p2.draw(opacity);
 
-        // Optimized connection logic for "Neural Web" effect
-        if (i % 2 === 0) { // Connect every 2nd particle to maintain 60FPS
-          for (let j = i + 1; j < Math.min(i + 12, particles.length); j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const d2 = dx * dx + dy * dy;
+        // Matte DNA Rungs
+        ctx.beginPath();
+        const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+        gradient.addColorStop(0, `rgba(8, 145, 178, ${opacity * 0.3})`);
+        gradient.addColorStop(1, `rgba(67, 56, 202, ${opacity * 0.3})`);
+        
+        ctx.strokeStyle = gradient;
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
 
-            if (d2 < connDistSq) {
-              ctx.beginPath();
-              ctx.lineWidth = isForming ? 0.3 : 0.6;
-              ctx.strokeStyle = `rgba(0, 242, 255, ${isForming ? 0.08 : 0.15})`;
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p2.x, p2.y);
-              ctx.stroke();
-            }
-          }
+        // Persistent Data-Node details (Matte)
+        if (opacity > 0.1) {
+          const midX = (p1.x + p2.x) * 0.5;
+          const midY = (p1.y + p2.y) * 0.5;
+          ctx.beginPath();
+          ctx.arc(midX, midY, 1, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.6})`;
+          ctx.fill();
         }
+      }
 
-        if (mousePos.active) {
-          const mdx = p.x - mousePos.x; const mdy = p.y - mousePos.y;
-          const md2 = mdx * mdx + mdy * mdy;
-          if (md2 < 260 * 260) {
-            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mousePos.x, mousePos.y);
-            ctx.strokeStyle = `rgba(0, 242, 255, ${0.5 * (1 - Math.sqrt(md2) / 260)})`;
-            ctx.lineWidth = 1; ctx.stroke();
-            p.x -= mdx * 0.04; p.y -= mdy * 0.04;
-          }
-        }
+      // Draw Core
+      const coreMetas: any[] = [];
+      coreParticles.forEach((p, i) => {
+        const m = p.update(w, h, mousePos, rotationAngle);
+        p.draw(m.opacity, m.perspective);
+        coreMetas[i] = m;
       });
+
+      // Central Node (Matte)
+      ctx.beginPath();
+      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * pulseVal})`;
+      ctx.fill();
+
+      // High-Definition Structural Mesh (Forms the Circle)
+      ctx.lineWidth = 1;
+      for (let i = 0; i < coreParticles.length; i++) {
+        for (let j = i + 1; j < coreParticles.length; j++) {
+          const p1 = coreParticles[i], p2 = coreParticles[j];
+          const d2 = (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
+          // Connecting lines to form the circular web
+          if (d2 < 180 * 180) {
+            const alpha = (1 - Math.sqrt(d2) / 180) * 0.15 * coreMetas[i].opacity;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 242, 255, ${alpha})`;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
       animationFrameId = requestAnimationFrame(animate);
     };
 
     window.addEventListener('resize', init);
-    // Timeout for first init to ensure layout bounds
-    setTimeout(init, 50);
-    requestAnimationFrame(animate);
-    return () => { window.removeEventListener('resize', init); cancelAnimationFrame(animationFrameId); };
-  }, [mousePos, isForming, targetPoints]);
+    init();
+    animate();
+    return () => {
+      window.removeEventListener('resize', init);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [mousePos]);
 
   return <canvas ref={canvasRef} className={styles.particleCanvas} />;
 };
 
-const NeuralSynapse = ({ isForming }: { isForming: boolean }) => {
-  const [mounted, setMounted] = useState(false);
-  const [cables, setCables] = useState<any[]>([]);
 
-  useEffect(() => {
-    const generatedCables = Array.from({ length: 16 }).map((_, i) => {
-      const angle = (i / 16) * Math.PI * 2;
-      const length = 200 + Math.random() * 210;
-      const endX = 300 + Math.cos(angle) * length;
-      const endY = 300 + Math.sin(angle) * length;
-      return { d: `M300 300 Q${300 + Math.random() * 50} ${300 + Math.random() * 50} ${endX} ${endY}`, id: i, delay: Math.random() * 5 };
-    });
-    setCables(generatedCables);
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return <div style={{ width: 600, height: 600 }} />;
-
-  return (
-    <div className={styles.neuralContainer}>
-      <svg width="600" height="600" viewBox="0 0 600 600" fill="none" className={styles.neuralSvg}>
-        <g style={{ transition: 'opacity 1s ease', opacity: isForming ? 0.3 : 0.09 }}>
-          {cables.map(c => <path key={`bg-${c.id}`} d={c.d} stroke="var(--primary)" strokeWidth="1" />)}
-        </g>
-        <g className={styles.corePulse}>
-          <circle cx="300" cy="300" r={isForming ? 85 : 55} fill="var(--primary)" opacity={isForming ? 0.25 : 0.1} style={{ transition: 'all 1s ease', filter: 'blur(10px)' }} />
-          <circle cx="300" cy="300" r={isForming ? 40 : 25} fill="var(--primary)" opacity={isForming ? 0.4 : 0.2} style={{ transition: 'all 1s ease', filter: 'blur(5px)' }} />
-          <defs>
-            <radialGradient id="coreGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-              <stop offset="60%" stopColor="var(--primary)" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-          <circle cx="300" cy="300" r={isForming ? 22 : 14} fill="url(#coreGrad)" style={{ transition: 'all 1s ease', filter: 'drop-shadow(0 0 15px var(--primary))' }} />
-        </g>
-        <g stroke="var(--primary)" strokeWidth="2.8" className={styles.runningLights}>
-          {cables.filter((_, i) => i % 3 === 0).map((c) => (
-            <path key={`pulse-${c.id}`} d={c.d} strokeDasharray="16 200" style={{ animationDelay: `${c.delay}s`, animationDuration: `${isForming ? 1.8 : 4}s` }} />
-          ))}
-        </g>
-      </svg>
-    </div>
-  );
-};
 
 const ZraiBrand = () => (
   <a href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
@@ -333,7 +399,6 @@ export default function Home() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const { t, locale, setLocale } = useLanguage();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
-  const [isForming, setIsForming] = useState(true);
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const heroRef = useRef<HTMLElement>(null);
@@ -347,11 +412,13 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {
     setMounted(true);
-    
-    // Professional "Cache Clear" / Versioning Logic
-    const APP_VERSION = "2.7.0";
+
+    // Performance & State Sync (Force refresh for fluidity)
+    const APP_VERSION = "2.9.0";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
       console.log("New version detected, clearing stale cache...");
@@ -362,14 +429,12 @@ export default function Home() {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
-      // Always show at the very top
       if (currentScrollY < 50) {
         setShowNav(true);
       } else {
-        // Hide if scrolling down, show if scrolling up
         if (currentScrollY > lastScrollY) {
           setShowNav(false);
+          setIsMenuOpen(false); // Close menu on scroll
         } else {
           setShowNav(true);
         }
@@ -378,7 +443,6 @@ export default function Home() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      // If mouse is near top (top 80px), show nav
       if (e.clientY < 80) {
         setShowNav(true);
       }
@@ -386,7 +450,7 @@ export default function Home() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", handleMouseMove);
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
@@ -404,17 +468,39 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <nav className={`${styles.nav} ${!showNav ? styles.navHidden : ""}`}>
+      <nav className={`${styles.nav} ${!showNav ? styles.navHidden : ""} ${isMenuOpen ? styles.navExpanded : ""}`}>
         <ZraiBrand />
-        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <div className={styles.languageSwitcher} style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', borderRight: '1px solid rgba(255,255,255,0.05)', paddingRight: '1.5rem' }}>
-            <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.4, transition: '0.3s', color: locale === "es" ? 'var(--primary)' : 'inherit' }}>ESP</span>
-            <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.4, transition: '0.3s', color: locale === "en" ? 'var(--primary)' : 'inherit' }}>ENG</span>
+
+        {/* Desktop Links */}
+        <div className={styles.navDesktop}>
+          <div className={styles.languageSwitcher}>
+            <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.4, transition: '0.3s', color: locale === "es" ? 'var(--primary)' : '#94a3b8', fontWeight: 800 }}>ESP</span>
+            <span onClick={() => setLocale("en")} style={{ cursor: 'pointer', opacity: locale === "en" ? 1 : 0.4, transition: '0.3s', color: locale === "en" ? 'var(--primary)' : '#94a3b8', fontWeight: 800 }}>ENG</span>
           </div>
 
           <div className={styles.navActions}>
             <button className={styles.loginBtn}>{t.nav.login}</button>
             <button className={styles.registerBtn}>{t.nav.register}</button>
+          </div>
+        </div>
+
+        {/* Mobile Hamburger Toggle */}
+        <button className={styles.menuToggle} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <div className={`${styles.hamburger} ${isMenuOpen ? styles.hamburgerOpen : ""}`}>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+
+        {/* Mobile Dropdown Menu */}
+        <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuVisible : ""}`}>
+          <div className={styles.mobileNavLinks}>
+            <button className={styles.loginBtn}>{t.nav.login}</button>
+            <button className={styles.registerBtn}>{t.nav.register}</button>
+            <div className={styles.mobileLang}>
+              <span onClick={() => { setLocale("es"); setIsMenuOpen(false); }}>ESP</span>
+              <span onClick={() => { setLocale("en"); setIsMenuOpen(false); }}>ENG</span>
+            </div>
           </div>
         </div>
       </nav>
@@ -424,17 +510,17 @@ export default function Home() {
           <div className={styles.heroText}>
             <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
             <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.hero.description}</p>
-            <div className={styles.reveal} style={{ display: 'flex', gap: '1.25rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div className={`${styles.reveal} ${styles.heroActions}`} style={{ display: 'flex', gap: '1.5rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'inherit' }}>
               <button className="btn-primary" onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
               <button className="btn-outline" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
             </div>
           </div>
-          <div className={styles.heroImageContainer}>
+
+          <div className={styles.heroVisuals}>
             <div className={styles.heroGlow} />
             <div className={styles.particleContainer}>
-              <ParticleEngine mousePos={mousePos} isForming={isForming} />
+               <ParticleEngine mousePos={mousePos} />
             </div>
-            <NeuralSynapse isForming={isForming} />
           </div>
         </div>
       </header>
