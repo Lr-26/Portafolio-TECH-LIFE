@@ -265,12 +265,12 @@ const ParticleEngine = ({ mousePos }: { mousePos: { x: number, y: number, active
       isMobile = w < 1024;
 
       coreParticles = [];
-      const coreCount = isMobile ? 16 : 24; // Rebalanced for structural clarity
-      const coreRadius = isMobile ? 120 : 190; // Large radius for crisp separation
+      const coreCount = isMobile ? 20 : 32; // Increased density for smaller particles
+      const coreRadius = isMobile ? 120 : 190; // Keeping the large separation
       for (let i = 0; i < coreCount; i++) {
-        // Diversified 'Ultra-Large' molecule sizes (range 15 to 60) for depth
+        // Precise smaller molecule sizes (range 8 to 22)
         const p = new CoreParticle(w, h, coreRadius, i, coreCount);
-        p.baseSize = Math.random() * 45 + 15;
+        p.baseSize = Math.random() * 14 + 8;
         coreParticles.push(p);
       }
 
