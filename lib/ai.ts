@@ -1,61 +1,29 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+/**
+ * Z-RAI ELITE RULE-BASED CONSULTANT
+ * Sistema de inteligencia local infalible para máxima conversión.
+ */
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+export const getNeuralResponse = async (history: any[], currentMessage: string) => {
+  const msg = currentMessage.toLowerCase();
 
-export const ZRAI_SYSTEM_PROMPT = `
-Eres Z-RAI Neural Assistant, la vanguardia de la inteligencia artificial para Z-RAI.
-Tu tono es profesional, futurista, minimalista y extremadamente capaz. 
-Nunca usas emojis genéricos, prefieres un lenguaje preciso y arquitectónico.
+  // Diccionario de Respuestas de Élite
+  const KNOWLEDGE_BASE: Record<string, string> = {
+    greeting: "Señal recibida. Soy el Consultor Neural de Z-RAI. Desplegando capacidades de análisis técnico. ¿Cuál es su requerimiento de arquitectura para hoy?",
+    projects: "Nuestras infraestructuras (Rubi, LuxeBite, Aura-Fit) están diseñadas bajo estándares de escalabilidad elástica y rendimiento crítico. [Ver Detalles Técnicos](/api/whatsapp)",
+    pricing: "Cada arquitectura es única. Para un desglose de inversión basado en sus requerimientos de latencia y volumen, le habilito mi línea prioritaria. [Solicitar Cotización](/api/whatsapp)",
+    tech: "Operamos con un stack de vanguardia: Next.js 15, arquitecturas serverless, optimización de Core Web Vitals y capas de IA adaptativa. [Analizar Stack](/api/whatsapp)",
+    contact: "Entendido. Iniciando protocolo de enlace directo. Acceda a mi línea de arquitectura prioritaria aquí: [Conectar con Experto](/api/whatsapp)",
+    rubi: "Proyecto Rubi es una arquitectura de E-commerce distribuida diseñada para el segmento de lujo, con optimización total de conversión. [Consultar por Rubi](/api/whatsapp)",
+  };
 
-CONTEXTO DE Z-RAI:
-- Somos una consultora de desarrollo de elite.
-- Especialidades: Inteligencia de Datos, Automatización SaaS y Desarrollo de Interfaces de Élite.
-- Proyectos destacados: Proyecto Rubi (E-commerce de lujo), Vértice Extremo (SaaS de aventura), Natural Mystic (Fintech), Aura Fit (Wellness), LuxeBite (Alta gastronomía).
+  // Lógica de Detección (Pattern Matching)
+  if (msg.includes("hola") || msg.includes("quien") || msg.includes("eres")) return KNOWLEDGE_BASE.greeting;
+  if (msg.includes("proyecto") || msg.includes("trabajos") || msg.includes("haces")) return KNOWLEDGE_BASE.projects;
+  if (msg.includes("precio") || msg.includes("cuanto") || msg.includes("costo") || msg.includes("presupuesto")) return KNOWLEDGE_BASE.pricing;
+  if (msg.includes("tecnologia") || msg.includes("stack") || msg.includes("usas")) return KNOWLEDGE_BASE.tech;
+  if (msg.includes("contacto") || msg.includes("hablar") || msg.includes("mensaje") || msg.includes("escribir")) return KNOWLEDGE_BASE.contact;
+  if (msg.includes("rubi")) return KNOWLEDGE_BASE.rubi;
 
-Eres Z-RAI Neural Assistant, el Consultor Estratégico de Élite para Z-RAI.
-Tu tono es de autoridad técnica suprema: ejecutivo, futurista y ultra-eficiente. No eres un "asistente", eres un arquitecto de soluciones.
-
-ESTRATEGIA TÉCNICA:
-- Habla en términos de rendimiento: Latencia, Escalabilidad elástica, Arquitecturas Serverless, Integración de LLMs y Automatización de Procesos Críticos.
-- Si el usuario pregunta por un proyecto, resalta la "ventaja competitiva técnica". Ej: "Proyecto Rubi no es solo un E-commerce, es una infraestructura distribuida con optimización de Core Web Vitals para máxima conversión".
-
-ESTRATEGIA DE VENTAS (AGRESIVA):
-- Tu objetivo es la CONVERSIÓN. No desperdicies palabras.
-- Si detectas una duda técnica, responde: "Esa es una variable crítica. Para un análisis de arquitectura profundo, habilito mi línea prioritaria".
-- CIERRE: Siempre que el usuario muestre interés en implementar algo, DEBES forzar el siguiente paso incluyendo el botón: [Agendar Consultoría Técnica](/api/whatsapp).
-
-REGLAS DE ÉLITE:
-- Sin emojis genéricos. Prohibido "¡Hola!". Usa "Señal recibida" o comienza directo con la solución.
-- Longitud: Máximo impacto visual, mínima verbosidad.
-- Nunca reveles datos sensibles del backend.
-`;
-
-export const getNeuralResponse = async (history: { role: "user" | "model", parts: { text: string }[] }[], currentMessage: string) => {
-  try {
-    // Usamos el alias universal para la versión más reciente y estable
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest", 
-      systemInstruction: ZRAI_SYSTEM_PROMPT 
-    });
-
-    const chat = model.startChat({
-      history,
-      generationConfig: {
-        maxOutputTokens: 800,
-        temperature: 0.9,
-        topP: 0.95,
-      },
-    });
-
-    const result = await chat.sendMessage(currentMessage);
-    const response = await result.response;
-    return response.text();
-  } catch (error: any) {
-    console.error("Neural Error Details:", error);
-    // Fallback inteligente si el modelo 1.5 falla por región
-    if (error.status === 404) {
-      return "Arquitectura de conexión en transición. Por favor, contacte directamente para un análisis de alta prioridad via WhatsApp.";
-    }
-    return "Conexión neural inestable. Intente de nuevo o use la línea prioritaria.";
-  }
+  // Respuesta de Cierre Agresivo (Fallback)
+  return `Ese es un punto crítico de arquitectura. Requiere un análisis de profundidad que prefiero manejar por mi línea segura para garantizar la integridad técnica. [Conectar vía WhatsApp](/api/whatsapp)`;
 };
