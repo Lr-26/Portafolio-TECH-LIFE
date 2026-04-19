@@ -32,24 +32,30 @@ REGLAS DE ÉLITE:
 
 export const getNeuralResponse = async (history: { role: "user" | "model", parts: { text: string }[] }[], currentMessage: string) => {
   try {
+    // Usamos el modelo estable de alta velocidad
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash", 
       systemInstruction: ZRAI_SYSTEM_PROMPT 
     });
 
     const chat = model.startChat({
       history,
       generationConfig: {
-        maxOutputTokens: 500,
+        maxOutputTokens: 800,
         temperature: 0.9,
         topP: 0.95,
       },
     });
 
     const result = await chat.sendMessage(currentMessage);
-    return result.response.text();
-  } catch (error) {
-    console.error("Neural Error:", error);
-    return "Conexión neuronal inestable. ¿Desea reintentar o conectar directamente vía WhatsApp?";
+    const response = await result.response;
+    return response.text();
+  } catch (error: any) {
+    console.error("Neural Error Details:", error);
+    // Fallback inteligente si el modelo 1.5 falla por región
+    if (error.status === 404) {
+      return "Arquitectura de conexión en transición. Por favor, contacte directamente para un análisis de alta prioridad via WhatsApp.";
+    }
+    return "Conexión neural inestable. Intente de nuevo o use la línea prioritaria.";
   }
 };
