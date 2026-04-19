@@ -32,9 +32,9 @@ REGLAS DE ÉLITE:
 
 export const getNeuralResponse = async (history: { role: "user" | "model", parts: { text: string }[] }[], currentMessage: string) => {
   try {
-    // Usamos el modelo estable de alta velocidad
+    // Usamos el modelo Universal Altamente Compatible
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash", 
+      model: "gemini-pro", 
       systemInstruction: ZRAI_SYSTEM_PROMPT 
     });
 
