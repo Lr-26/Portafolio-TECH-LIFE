@@ -105,7 +105,16 @@
     "title": "Ready to",
     "accent": "Scale?",
     "description": "Book a discovery call to see how AI can transform your workflow.",
-    "button": "Initiate Consultation"
+    "button": "Initiate Consultation",
+    "form": {
+      "name": "Full name",
+      "email": "Corporate email",
+      "message": "Project or technical inquiry",
+      "submit": "Submit Requirement",
+      "sending": "Processing...",
+      "success": "Inquiry sent successfully.",
+      "error": "Failed to process submission."
+    }
   },
   "trustedBy": "Trusted by innovative teams around the globe",
   "newsletter": {

@@ -966,17 +966,8 @@
 }
 
 @keyframes syncPulse {
-
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.6;
-    transform: scale(1.15);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
 }
 
 .brandTitle {
@@ -987,6 +978,24 @@
   text-transform: uppercase;
 }
 
+.chatHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.whatsappChatLink {
+  color: #64748b;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.whatsappChatLink:hover {
+  color: #25d366;
+  filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.4));
+}
+
 .closeBtn {
   background: transparent;
   border: none;
@@ -994,6 +1003,8 @@
   cursor: pointer;
   transition: 0.3s;
   padding: 2px;
+  display: flex;
+  align-items: center;
 }
 
 .closeBtn:hover {
@@ -1029,6 +1040,28 @@
   font-weight: 600;
   align-self: flex-end;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.chatCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  padding: 0.6rem 1rem;
+  background: #25d366;
+  color: #000;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.75rem;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chatCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+  filter: brightness(1.1);
 }
 
 .chatInputArea {
@@ -1103,3 +1136,147 @@
 
 
 /* Cleaned up redundant styles */
+
+/* --- PROFESSIONAL CONTACT SECTION --- */
+.contactSection {
+  padding: 8rem 5%;
+  background: radial-gradient(circle at 50% 100%, rgba(0, 242, 255, 0.05) 0%, transparent 60%);
+  position: relative;
+  overflow: hidden;
+}
+
+.contactContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .contactContainer {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.contactInfo h2 {
+  font-size: 3.5rem;
+  font-weight: 950;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.05em;
+}
+
+.contactInfo p {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.contactForm {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 3rem;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  margin-left: 0.5rem;
+}
+
+.formInput, .formTextarea {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.formInput:focus, .formTextarea:focus {
+  border-color: var(--primary);
+  background: rgba(0, 242, 255, 0.03);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+}
+
+.formTextarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.submitBtn {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  padding: 1.2rem;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.4s;
+  margin-top: 1rem;
+}
+
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 242, 255, 0.4);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- WHATSAPP FAB --- */
+.whatsappFab {
+  position: fixed;
+  bottom: 2rem;
+  left: 2.2rem;
+  width: 62px;
+  height: 62px;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 0 25px rgba(37, 211, 102, 0.4), 0 10px 40px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+
+.whatsappFab:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
+}
+
+.whatsappIcon {
+  width: 32px;
+  height: 32px;
+  fill: #fff;
+}

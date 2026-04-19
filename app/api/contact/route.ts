@@ -1,18 +1,49 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { z } from "zod";
+
+const ContactSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2).optional(),
+  message: z.string().min(10),
+  metadata: z.record(z.any()).optional()
+});
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
-    console.log("Contact form submitted:", data);
+    const rawData = await req.json();
     
-    // Simulate a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // 1. Professional Validation
+    const validatedData = ContactSchema.parse(rawData);
+    
+    // 2. Supabase Persistence
+    const { error } = await supabase
+      .from('leads')
+      .insert([
+        { 
+          email: validatedData.email, 
+          message: validatedData.message,
+          metadata: {
+            ...validatedData.metadata,
+            source: 'zrai_portfolio_contact'
+          }
+        }
+      ]);
+
+    if (error) {
+      console.error("Supabase Error:", error);
+      // We don't fail the user interaction if DB is down, but we log it
+    }
 
     return NextResponse.json({ 
       success: true, 
-      message: "Consultation request received successfully. Our AI will analyze your request and get back to you within 24 hours." 
+      message: "Neural routing complete. Your inquiry is being analyzed by our technical team." 
     }, { status: 200 });
+
   } catch (error) {
-    return NextResponse.json({ error: "Failed to submit request" }, { status: 500 });
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: "Invalid data structure", issues: error.issues }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Internal Neural processing error" }, { status: 500 });
   }
 }

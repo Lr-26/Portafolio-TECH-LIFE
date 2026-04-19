@@ -105,7 +105,16 @@
     "title": "¿Listo para",
     "accent": "Escalar?",
     "description": "Reserve una llamada de descubrimiento para ver cómo la IA puede transformar su flujo de trabajo.",
-    "button": "Iniciar Consulta"
+    "button": "Iniciar Consulta",
+    "form": {
+      "name": "Nombre completo",
+      "email": "Correo corporativo",
+      "message": "Proyecto o consulta técnica",
+      "submit": "Enviar Requerimiento",
+      "sending": "Procesando...",
+      "success": "Consulta enviada con éxito.",
+      "error": "Error al procesar el envío."
+    }
   },
   "trustedBy": "Empresas que confían en nuestro desarrollo",
   "newsletter": {

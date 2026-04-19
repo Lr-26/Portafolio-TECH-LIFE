@@ -9,7 +9,7 @@ const ChatBot = ({ locale }: { locale: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<{ type: 'bot' | 'user', text: string }[]>([
-    { type: 'bot', text: locale === 'es' ? '¡Hola! Soy el asistente de Z-RAI. Estoy aquí para guiarte a través de nuestras capacidades de IA de vanguardia. ¿En qué puedo ayudarte?' : 'Hello! I am the Z-RAI assistant. I am here to guide you through our cutting-edge AI capabilities. How can I assist you?' }
+    { type: 'bot', text: locale === 'es' ? 'Señal recibida. Soy el Consultor Neural de Z-RAI. Desplegando capacidades de análisis técnico. ¿Cuál es su requerimiento de arquitectura para hoy?' : 'Signal received. I am the Z-RAI Neural Consultant. Deploying technical analysis capabilities. What is your architecture requirement for today?' }
   ]);
 
   const scrollToSection = (id: string) => {
@@ -20,53 +20,46 @@ const ChatBot = ({ locale }: { locale: string }) => {
     }
   };
 
-  const handleQuery = (query: string) => {
+  const handleQuery = async (query: string) => {
     if (!query.trim()) return;
     const q = query.toLowerCase();
-    setMessages(prev => [...prev, { type: 'user', text: query }]);
+    
+    // Add user message to UI
+    const newUserMsg = { type: 'user' as const, text: query };
+    setMessages(prev => [...prev, newUserMsg]);
     setInputValue('');
     
-    setTimeout(() => {
-      let response = '';
-      
-      // Smart Intent Detection & Knowledge Base with Proactive Follow-ups
-      if (q.includes('servicio') || q.includes('service') || q.includes('hacen') || q.includes('do you do')) {
-        response = locale === 'es'
-          ? 'En Z-RAI nos especializamos en tres pilares: Inteligencia de Datos, Automatización SaaS y Desarrollo de Interfaces de Élite. \n\n¿En qué área específica de tu negocio crees que la IA podría generar el mayor impacto ahora mismo?'
-          : 'At Z-RAI we specialize in three pillars: Data Intelligence, SaaS Automation, and Elite Interface development. \n\nIn which specific area of your business do you think AI could generate the greatest impact right now?';
-        setTimeout(() => scrollToSection('services'), 6000);
-      } 
-      else if (q.includes('proceso') || q.includes('process') || q.includes('como trabajan') || q.includes('how do you work')) {
-        response = locale === 'es'
-          ? 'Nuestro proceso es metódico: Descubrimiento, Arquitectura, Desarrollo y Optimización. \n\n¿Tienes un proyecto con una fecha de lanzamiento definida o estás en una etapa de exploración inicial?'
-          : 'Our process is methodical: Discovery, Architecture, Development, and Optimization. \n\nDo you have a project with a defined launch date or are you in an initial exploration stage?';
-        setTimeout(() => scrollToSection('process'), 6000);
-      }
-      else if (q.includes('proyecto') || q.includes('project') || q.includes('portafolio') || q.includes('portfolio') || q.includes('trabajos') || q.includes('work')) {
-        response = locale === 'es'
-          ? 'Hemos desarrollado desde E-commerce de lujo hasta plataformas SaaS complejas. \n\n¿Buscas una solución para optimizar procesos internos o una plataforma centrada directamente en el usuario final?'
-          : 'We have developed everything from luxury E-commerce to complex SaaS platforms. \n\nAre you looking for a solution to optimize internal processes or a platform focused directly on the end user?';
-        setTimeout(() => scrollToSection('projects'), 5000);
-      }
-      else if (q.includes('contacto') || q.includes('contact') || q.includes('hablar') || q.includes('talk') || q.includes('reunion') || q.includes('meeting')) {
-        response = locale === 'es'
-          ? 'Podemos agendar una llamada de descubrimiento para profundizar en tu visión. \n\n¿Prefieres que conectemos por videollamada o prefieres una auditoría técnica inicial por correo?'
-          : 'We can schedule a discovery call to dive into your vision. \n\nWould you prefer a video call or an initial technical audit via email?';
-        setTimeout(() => scrollToSection('contact'), 2000);
-      }
-      else if (q.includes('quienes') || q.includes('who') || q.includes('zrai') || q.includes('empresa') || q.includes('company')) {
-        response = locale === 'es'
-          ? 'Z-RAI es una vanguardia tecnológica dedicada a redefinir lo posible mediante software de alto rendimiento. \n\n¿Tu empresa ya está utilizando alguna solución de IA o están buscando su primera implementación estratégica?'
-          : 'Z-RAI is a technological vanguard dedicated to redefining what is possible through high-performance software. \n\nIs your company already using an AI solution or are you looking for your first strategic implementation?';
-      }
-      else {
-        response = locale === 'es'
-          ? 'Entiendo tu punto. El equipo de Z-RAI siempre busca la excelencia técnica. \n\n¿Qué desafío tecnológico te ha traído hoy a nuestro portafolio?'
-          : 'I understand your point. The Z-RAI team always strives for technical excellence. \n\nWhat technological challenge has brought you to our portfolio today?';
-      }
+    try {
+      // Connect to the Neural Backend
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          messages: [...messages, newUserMsg] 
+        })
+      });
 
-      setMessages(prev => [...prev, { type: 'bot', text: response }]);
-    }, 600);
+      const data = await response.json();
+      
+      if (data.text) {
+        setMessages(prev => [...prev, { type: 'bot', text: data.text }]);
+        
+        // Smart Scroll Actions (Keep proactive features)
+        if (q.includes('servicio') || q.includes('service')) {
+          setTimeout(() => scrollToSection('services'), 3000);
+        } else if (q.includes('proceso') || q.includes('process')) {
+          setTimeout(() => scrollToSection('process'), 3000);
+        } else if (q.includes('proyecto') || q.includes('project')) {
+          setTimeout(() => scrollToSection('projects'), 3000);
+        }
+      }
+    } catch (error) {
+      console.error("Neural Link Error:", error);
+      setMessages(prev => [...prev, { 
+        type: 'bot', 
+        text: locale === 'es' ? 'Error de conexión neuronal.' : 'Neural connection error.' 
+      }]);
+    }
   };
 
   return (
@@ -88,14 +81,37 @@ const ChatBot = ({ locale }: { locale: string }) => {
               <div className={styles.neuralStatus} />
               <span className={styles.brandTitle}>Z-RAI</span>
             </div>
-            <button onClick={() => setIsOpen(false)} className={styles.closeBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <div className={styles.chatHeaderActions}>
+              <a 
+                href="/api/whatsapp" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.whatsappChatLink}
+                title={locale === 'es' ? 'Soporte Directo' : 'Direct Support'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.675 1.439 5.662 1.439h.056c6.555 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </a>
+              <button onClick={() => setIsOpen(false)} className={styles.closeBtn}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </div>
           </div>
           <div className={styles.chatBody}>
             {messages.map((msg, i) => (
               <div key={i} className={msg.type === 'bot' ? styles.msgBot : styles.msgUser}>
-                {msg.text}
+                {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, idx) => {
+                  const match = part.match(/\[(.*?)\]\((.*?)\)/);
+                  if (match) {
+                    const [_, label, url] = match;
+                    return (
+                      <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className={styles.chatCta}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '6px' }}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.675 1.439 5.662 1.439h.056c6.555 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        {label}
+                      </a>
+                    );
+                  }
+                  return part;
+                })}
               </div>
             ))}
           </div>
@@ -401,6 +417,7 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const heroRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -417,13 +434,9 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
 
-    // Performance & State Sync (Force refresh for fluidity)
-    const APP_VERSION = "2.9.0";
+    const APP_VERSION = "2.9.1";
     const storedVersion = localStorage.getItem("zrai_version");
     if (storedVersion !== APP_VERSION) {
-      console.log("New version detected, clearing stale cache...");
-      localStorage.clear();
-      sessionStorage.clear();
       localStorage.setItem("zrai_version", APP_VERSION);
     }
 
@@ -434,7 +447,7 @@ export default function Home() {
       } else {
         if (currentScrollY > lastScrollY) {
           setShowNav(false);
-          setIsMenuOpen(false); // Close menu on scroll
+          setIsMenuOpen(false);
         } else {
           setShowNav(true);
         }
@@ -442,25 +455,44 @@ export default function Home() {
       setLastScrollY(currentScrollY);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (e.clientY < 80) {
-        setShowNav(true);
-      }
-    };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
   const handleHeroMouseMove = (e: React.MouseEvent) => {
     if (heroRef.current) {
       const rect = heroRef.current.getBoundingClientRect();
       setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top, active: true });
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus('loading');
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          metadata: {
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString()
+          }
+        })
+      });
+
+      if (response.ok) {
+        setContactStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setContactStatus('idle'), 5000);
+      } else {
+        setContactStatus('error');
+      }
+    } catch (error) {
+      setContactStatus('error');
     }
   };
 
@@ -471,7 +503,6 @@ export default function Home() {
       <nav className={`${styles.nav} ${!showNav ? styles.navHidden : ""} ${isMenuOpen ? styles.navExpanded : ""}`}>
         <ZraiBrand />
 
-        {/* Desktop Links */}
         <div className={styles.navDesktop}>
           <div className={styles.languageSwitcher}>
             <span onClick={() => setLocale("es")} style={{ cursor: 'pointer', opacity: locale === "es" ? 1 : 0.4, transition: '0.3s', color: locale === "es" ? 'var(--primary)' : '#94a3b8', fontWeight: 800 }}>ESP</span>
@@ -484,7 +515,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
         <button className={styles.menuToggle} onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <div className={`${styles.hamburger} ${isMenuOpen ? styles.hamburgerOpen : ""}`}>
             <span></span>
@@ -492,7 +522,6 @@ export default function Home() {
           </div>
         </button>
 
-        {/* Mobile Dropdown Menu */}
         <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuVisible : ""}`}>
           <div className={styles.mobileNavLinks}>
             <button className={styles.loginBtn}>{t.nav.login}</button>
@@ -511,7 +540,7 @@ export default function Home() {
             <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
             <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.hero.description}</p>
             <div className={`${styles.reveal} ${styles.heroActions}`} style={{ display: 'flex', gap: '1.5rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'inherit' }}>
-              <button className="btn-primary" onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Explorar Soluciones" : "Explore Solutions"}</button>
+              <button className="btn-primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Obtener Consulta" : "Get Consultation"}</button>
               <button className="btn-outline" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
             </div>
           </div>
@@ -534,7 +563,6 @@ export default function Home() {
 
         <div className={styles.servicesGrid}>
           {t.services.items.map((service: any, idx: number) => {
-            // Custom designed SVG Icons for AI logic
             const SVGs = [
               <svg key="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>,
               <svg key="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>,
@@ -562,7 +590,6 @@ export default function Home() {
           <p className={styles.reveal} style={{ animationDelay: '0.1s', color: '#94a3b8' }}>{t.projects.description}</p>
         </div>
 
-        {/* Dynamic Project Search */}
         <div className={styles.reveal} style={{ maxWidth: '600px', margin: '0 auto 4rem', position: 'relative', animationDelay: '0.2s' }}>
           <div style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4, color: 'var(--primary)' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -574,18 +601,6 @@ export default function Home() {
             value={projectSearch}
             onChange={(e) => setProjectSearch(e.target.value)}
             suppressHydrationWarning
-            style={{
-              width: '100%',
-              padding: '1.2rem 1.5rem 1.2rem 4rem',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '16px',
-              color: '#fff',
-              fontSize: '0.95rem',
-              outline: 'none',
-              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
-            }}
           />
         </div>
 
@@ -615,7 +630,55 @@ export default function Home() {
         </div>
       </section>
 
-
+      {/* --- PROFESSIONAL CONTACT SECTION --- */}
+      <section id="contact" className={styles.contactSection}>
+        <div className={styles.contactContainer}>
+          <div className={styles.contactInfo}>
+            <h2 className={styles.reveal}>{t.contact.title} <span className="gradient-text">{t.contact.accent}</span></h2>
+            <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.contact.description}</p>
+          </div>
+          <form className={`${styles.contactForm} ${styles.reveal}`} style={{ animationDelay: '0.2s' }} onSubmit={handleContactSubmit}>
+            <div className={styles.formGroup}>
+              <label>{t.contact.form.name}</label>
+              <input 
+                type="text" 
+                className={styles.formInput} 
+                required 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>{t.contact.form.email}</label>
+              <input 
+                type="email" 
+                className={styles.formInput} 
+                required 
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>{t.contact.form.message}</label>
+              <textarea 
+                className={styles.formTextarea} 
+                required 
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+              />
+            </div>
+            <button 
+              type="submit" 
+              className={styles.submitBtn} 
+              disabled={contactStatus === 'loading'}
+            >
+              {contactStatus === 'loading' ? t.contact.form.sending : t.contact.form.submit}
+            </button>
+            {contactStatus === 'success' && <p style={{ color: 'var(--primary)', fontSize: '0.8rem', textAlign: 'center' }}>{t.contact.form.success}</p>}
+            {contactStatus === 'error' && <p style={{ color: '#ef4444', fontSize: '0.8rem', textAlign: 'center' }}>{t.contact.form.error}</p>}
+          </form>
+        </div>
+      </section>
 
       <footer className={styles.footerMega}>
         <div className={styles.footerGlow} />
@@ -624,7 +687,9 @@ export default function Home() {
             <h2 className={styles.footerCtaTitle}>{locale === 'es' ? '¿Listo para evolucionar?' : 'Ready to evolve?'}</h2>
             <p className={styles.footerCtaDesc}>{locale === 'es' ? 'Hablemos sobre tu próximo proyecto de IA.' : "Let's talk about your next AI project."}</p>
           </div>
-          <button className="btn-primary" style={{ padding: '1rem 3rem' }}>{locale === 'es' ? 'Empezar ahora' : 'Get Started'}</button>
+          <button className="btn-primary" style={{ padding: '1rem 3rem' }} onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+            {locale === 'es' ? 'Empezar ahora' : 'Get Started'}
+          </button>
         </section>
 
         <div className={styles.footerMainGrid}>
@@ -651,7 +716,7 @@ export default function Home() {
 
           <div className={styles.footerLinksBlock}>
             <h4>{locale === 'es' ? 'Soporte' : 'Support'}</h4>
-            <a href="#">{locale === 'es' ? 'Consultoría' : 'Consulting'}</a>
+            <a href="#" onClick={() => window.open('/api/whatsapp', '_blank')}>{locale === 'es' ? 'Consultoría' : 'Consulting'}</a>
             <a href="#">{locale === 'es' ? 'Legal' : 'Legal'}</a>
             <a href="#">API</a>
           </div>
@@ -669,6 +734,18 @@ export default function Home() {
           <p>© 2026 Z-RAI. {locale === 'es' ? 'Todos los derechos reservados.' : 'All rights reserved.'}</p>
         </div>
       </footer>
+
+      {/* --- WHATSAPP FLOATING BUTTON (PROTECTED) --- */}
+      <a 
+        href="/api/whatsapp" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className={styles.whatsappFab}
+      >
+        <svg className={styles.whatsappIcon} viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.675 1.439 5.662 1.439h.056c6.555 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
 
       {/* --- AI CHATBOT SYSTEM --- */}
       <ChatBot locale={locale} />
