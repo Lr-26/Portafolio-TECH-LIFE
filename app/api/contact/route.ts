@@ -6,7 +6,7 @@ const ContactSchema = z.object({
   email: z.string().email(),
   name: z.string().min(2).optional(),
   message: z.string().min(10),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 });
 
 export async function POST(req: Request) {
@@ -17,6 +17,11 @@ export async function POST(req: Request) {
     const validatedData = ContactSchema.parse(rawData);
     
     // 2. Supabase Persistence
+    if (!supabase) {
+      console.warn("Supabase not configured. Lead data captured in logs only.");
+      return NextResponse.json({ success: true, mode: 'local' });
+    }
+
     const { error } = await supabase
       .from('leads')
       .insert([
