@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
