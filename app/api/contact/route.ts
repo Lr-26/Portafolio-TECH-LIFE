@@ -37,7 +37,11 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error("Supabase Error:", error);
-      // We don't fail the user interaction if DB is down, but we log it
+      return NextResponse.json({ 
+        success: false, 
+        error: "Supabase Error", 
+        details: error 
+      }, { status: 500 });
     }
 
     return NextResponse.json({ 
