@@ -1,8 +1,7 @@
-"use client";
-
 import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
+import { X, CheckCircle, ChevronRight, Mail, User, Building } from "lucide-react";
 
 /* --- NEW CHATBOT COMPONENT --- */
 const ChatBot = ({ locale }: { locale: string }) => {
@@ -419,17 +418,56 @@ export default function Home() {
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const heroRef = useRef<HTMLElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'consultation'|'project'|'register'>('consultation');
+  const [modalStatus, setModalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [modalForm, setModalForm] = useState({ name: '', email: '', company: '', role: '', message: '' });
+
+  const openModal = (type: 'consultation'|'project'|'register') => {
+    setModalType(type);
+    setModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setTimeout(() => setModalStatus('idle'), 300);
+    document.body.style.overflow = 'auto';
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalStatus('loading');
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: modalForm.name,
+          email: modalForm.email,
+          message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
+          metadata: {
+            company: modalForm.company,
+            role: modalForm.role,
+            type: modalType,
+            url: window.location.href,
+            timestamp: new Date().toISOString()
+          }
+        })
+      });
+
+      if (response.ok) {
+        setModalStatus('success');
+        setModalForm({ name: '', email: '', company: '', role: '', message: '' });
+      } else {
+        setModalStatus('error');
+      }
+    } catch (error) {
+      setModalStatus('error');
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -510,8 +548,8 @@ export default function Home() {
           </div>
 
           <div className={styles.navActions}>
-            <button className={styles.loginBtn}>{t.nav.login}</button>
-            <button className={styles.registerBtn}>{t.nav.register}</button>
+            <button className={styles.loginBtn} onClick={() => openModal('register')}>{t.nav.login}</button>
+            <button className={styles.registerBtn} onClick={() => openModal('register')}>{t.nav.register}</button>
           </div>
         </div>
 
@@ -524,8 +562,8 @@ export default function Home() {
 
         <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuVisible : ""}`}>
           <div className={styles.mobileNavLinks}>
-            <button className={styles.loginBtn}>{t.nav.login}</button>
-            <button className={styles.registerBtn}>{t.nav.register}</button>
+            <button className={styles.loginBtn} onClick={() => { setIsMenuOpen(false); openModal('register'); }}>{t.nav.login}</button>
+            <button className={styles.registerBtn} onClick={() => { setIsMenuOpen(false); openModal('register'); }}>{t.nav.register}</button>
             <div className={styles.mobileLang}>
               <span onClick={() => { setLocale("es"); setIsMenuOpen(false); }}>ESP</span>
               <span onClick={() => { setLocale("en"); setIsMenuOpen(false); }}>ENG</span>
@@ -540,7 +578,7 @@ export default function Home() {
             <h1 className={styles.reveal}>{t.hero.headline} <span className="gradient-text">{t.hero.accent}</span></h1>
             <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.hero.description}</p>
             <div className={`${styles.reveal} ${styles.heroActions}`} style={{ display: 'flex', gap: '1.5rem', animationDelay: '0.2s', zIndex: 100, flexWrap: 'wrap', justifyContent: 'inherit' }}>
-              <button className="btn-primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>{locale === "es" ? "Obtener Consulta" : "Get Consultation"}</button>
+              <button className="btn-primary" onClick={() => openModal('consultation')}>{locale === "es" ? "Obtener Consulta" : "Get Consultation"}</button>
               <button className="btn-outline" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>{t.hero.viewProjects}</button>
             </div>
           </div>
@@ -621,7 +659,7 @@ export default function Home() {
                 <div className={styles.projectContent}>
                   <h3 className={styles.projectTitle}>{project.title}</h3>
                   <p className={styles.projectDesc}>{project.description}</p>
-                  <div className={styles.projectBtn}>
+                  <div className={styles.projectBtn} onClick={(e) => { e.preventDefault(); e.stopPropagation(); openModal('project'); }}>
                     {locale === 'es' ? 'Ver Proyecto' : 'View Project'} ➔
                   </div>
                 </div>
@@ -739,6 +777,58 @@ export default function Home() {
 
       {/* --- AI CHATBOT SYSTEM --- */}
       <ChatBot locale={locale} />
+
+      {/* --- REGISTRATION MODAL --- */}
+      {modalOpen && (
+        <div className={styles.modalOverlay} onClick={closeModal} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()} style={{ background: '#0a0f1d', border: '1px solid rgba(0, 242, 255, 0.2)', padding: '3rem', borderRadius: '24px', width: '90%', maxWidth: '500px', position: 'relative', boxShadow: '0 20px 60px rgba(0, 242, 255, 0.1)' }}>
+            <button onClick={closeModal} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={24} /></button>
+            
+            {modalStatus === 'success' ? (
+              <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                <CheckCircle size={60} color="#00f2ff" style={{ margin: '0 auto 1.5rem' }} />
+                <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>{locale === 'es' ? 'Acceso Concedido' : 'Access Granted'}</h3>
+                <p style={{ color: '#94a3b8', lineHeight: '1.8' }}>{locale === 'es' ? 'Tu solicitud ha sido encriptada y enviada a nuestro nodo principal. Nos comunicaremos a la brevedad.' : 'Your request has been encrypted and sent to our main node. We will be in touch shortly.'}</p>
+                <button onClick={closeModal} className="btn-primary" style={{ marginTop: '2.5rem', width: '100%' }}>{locale === 'es' ? 'Continuar' : 'Continue'}</button>
+              </div>
+            ) : (
+              <>
+                <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '0.5rem' }}>{modalType === 'consultation' ? (locale === 'es' ? 'Protocolo de Consulta' : 'Consultation Protocol') : (locale === 'es' ? 'Desbloquear Proyecto' : 'Unlock Project')}</h3>
+                <p style={{ color: '#94a3b8', marginBottom: '2rem', fontSize: '0.9rem' }}>{locale === 'es' ? 'Ingresa tus credenciales para establecer la conexión con nuestro equipo técnico.' : 'Enter your credentials to establish a connection with our technical team.'}</p>
+                
+                <form onSubmit={handleModalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <div style={{ position: 'relative' }}>
+                    <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="text" required placeholder={locale === 'es' ? 'Nombre completo' : 'Full name'} value={modalForm.name} onChange={e => setModalForm({...modalForm, name: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <Mail size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="email" required placeholder={locale === 'es' ? 'Correo electrónico' : 'Email address'} value={modalForm.email} onChange={e => setModalForm({...modalForm, email: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+                  
+                  {modalType === 'consultation' && (
+                    <textarea 
+                      placeholder={locale === 'es' ? 'Breve descripción de requerimientos...' : 'Brief description of requirements...'} 
+                      value={modalForm.message} 
+                      onChange={e => setModalForm({...modalForm, message: e.target.value})} 
+                      style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
+                    />
+                  )}
+
+                  <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '1rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+                    {modalStatus === 'loading' ? (locale === 'es' ? 'Procesando...' : 'Processing...') : (locale === 'es' ? 'Establecer Enlace' : 'Establish Link')}
+                    {modalStatus !== 'loading' && <ChevronRight size={18} />}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
