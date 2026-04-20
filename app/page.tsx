@@ -420,6 +420,16 @@ export default function Home() {
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const heroRef = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'consultation'|'project'|'register'>('consultation');
