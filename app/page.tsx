@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
-import { X, CheckCircle, ChevronRight, Mail, User, Building } from "lucide-react";
+import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut } from "lucide-react";
 
 /* --- NEW CHATBOT COMPONENT --- */
 const ChatBot = ({ locale }: { locale: string }) => {
@@ -422,6 +422,9 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -508,7 +511,18 @@ export default function Home() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [lastScrollY]);
 
   const handleHeroMouseMove = (e: React.MouseEvent) => {
@@ -562,8 +576,52 @@ export default function Home() {
           </div>
 
           <div className={styles.navActions}>
-            <button className={styles.loginBtn} onClick={() => openModal('register')}>{t.nav.login}</button>
-            <button className={styles.registerBtn} onClick={() => openModal('register')}>{t.nav.register}</button>
+            <div className={styles.userMenuContainer} ref={userMenuRef}>
+              <button 
+                className={styles.userIconBtn} 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                aria-label="User Menu"
+              >
+                <UserCircle size={28} className={isUserMenuOpen ? styles.activeIcon : ""} />
+              </button>
+
+              {isUserMenuOpen && (
+                <div className={styles.userDropdown}>
+                  {!user ? (
+                    <>
+                      <button className={styles.dropdownItem} onClick={() => { setIsUserMenuOpen(false); openModal('register'); }}>
+                        <User size={16} />
+                        {t.nav.login}
+                      </button>
+                      <button className={styles.dropdownItem} onClick={() => { setIsUserMenuOpen(false); openModal('register'); }}>
+                        <CheckCircle size={16} />
+                        {t.nav.register}
+                      </button>
+                      {/* Demo: Login action */}
+                      <button 
+                        className={styles.dropdownItem} 
+                        style={{ borderTop: '1px solid rgba(255,255,255,0.05)', color: 'var(--primary)' }}
+                        onClick={() => { setUser({ name: 'Diego' }); setIsUserMenuOpen(false); }}
+                      >
+                        [Demo Login]
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className={styles.userProfileInfo}>
+                        <span className={styles.userName}>{user.name}</span>
+                        <span className={styles.userStatus}>Status: Pro</span>
+                      </div>
+                      <div className={styles.dropdownDivider} />
+                      <button className={styles.dropdownItem} onClick={() => { setUser(null); setIsUserMenuOpen(false); }}>
+                        <LogOut size={16} />
+                        {locale === 'es' ? 'Cerrar Sesión' : 'Log Out'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
