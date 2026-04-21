@@ -866,12 +866,12 @@ export default function Home() {
           </button>
         </section>
 
-        <div className={styles.footerMainGrid} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '3rem' }}>
+        <div className={styles.footerMainGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '4rem' }}>
           
           {/* Col 1: Brand */}
-          <div className={styles.footerInfo} style={{ flex: '1 1 300px' }}>
+          <div className={styles.footerInfo} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <ZraiBrand />
-            <p className={styles.footerBrandDesc}>
+            <p className={styles.footerBrandDesc} style={{ color: '#94a3b8', lineHeight: '1.6', maxWidth: '350px' }}>
               {locale === 'es'
                 ? 'Liderando la vanguardia tecnológica con soluciones inteligentes que redefinen lo posible.'
                 : 'Leading the technological vanguard with intelligent solutions that redefine what is possible.'}
@@ -879,24 +879,24 @@ export default function Home() {
           </div>
 
           {/* Col 2: Navigation */}
-          <div className={styles.footerLinksBlock} style={{ flex: '1 1 150px' }}>
-            <h4>{locale === 'es' ? 'Compañía' : 'Company'}</h4>
-            <a href="#hero">{locale === 'es' ? 'Sobre Nosotros' : 'About'}</a>
-            <a href="#services">{locale === 'es' ? 'Soluciones' : 'Solutions'}</a>
-            <a href="#projects">{locale === 'es' ? 'Trabajos' : 'Works'}</a>
+          <div className={styles.footerLinksBlock} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <h4 style={{ color: '#fff', fontSize: '1rem', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{locale === 'es' ? 'Compañía' : 'Company'}</h4>
+            <a href="#hero" style={{ color: '#64748b', textDecoration: 'none', transition: '0.3s' }} onMouseOver={e=>e.currentTarget.style.color='#00f2ff'} onMouseOut={e=>e.currentTarget.style.color='#64748b'}>{locale === 'es' ? 'Sobre Nosotros' : 'About'}</a>
+            <a href="#services" style={{ color: '#64748b', textDecoration: 'none', transition: '0.3s' }} onMouseOver={e=>e.currentTarget.style.color='#00f2ff'} onMouseOut={e=>e.currentTarget.style.color='#64748b'}>{locale === 'es' ? 'Soluciones' : 'Solutions'}</a>
+            <a href="#projects" style={{ color: '#64748b', textDecoration: 'none', transition: '0.3s' }} onMouseOver={e=>e.currentTarget.style.color='#00f2ff'} onMouseOut={e=>e.currentTarget.style.color='#64748b'}>{locale === 'es' ? 'Trabajos' : 'Works'}</a>
           </div>
 
           {/* Col 3: Connect (Socials) */}
-          <div className={styles.footerLinksBlock} style={{ flex: '1 1 150px' }}>
-            <h4>{locale === 'es' ? 'Conectar' : 'Connect'}</h4>
-            <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.8rem' }}>
-              <a href="/api/whatsapp" target="_blank" className={styles.footerSocialBtn}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className={styles.footerLinksBlock} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <h4 style={{ color: '#fff', fontSize: '1rem', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{locale === 'es' ? 'Conectar' : 'Connect'}</h4>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <a href="/api/whatsapp" target="_blank" className={styles.footerSocialBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                 </svg>
               </a>
-              <a href="#" target="_blank" className={styles.footerSocialBtn}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <a href="#" target="_blank" className={styles.footerSocialBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
