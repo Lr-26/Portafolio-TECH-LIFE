@@ -89,7 +89,7 @@ const ChatBot = ({ locale }: { locale: string }) => {
           <span style={{ fontSize: '1.2rem', color: '#fff' }}>×</span>
         ) : (
           <div className={styles.neuralPulse}>
-            <img src="/zrai-logo-transparent.png" alt="Z-R" width="40" height="40" style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 5px rgba(0, 242, 255, 0.4))' }} />
+            <img src="/zrai-logo-transparent.png" alt="Z-R" width="28" height="28" style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 5px rgba(0, 242, 255, 0.4))' }} />
           </div>
         )}
       </div>
@@ -420,12 +420,11 @@ const ZraiBrand = () => (
     <img
       src="/zrai-logo-transparent.png"
       alt="Z-RAI Logo"
-      width="150"
+      width="100"
       height="auto"
       style={{
         objectFit: 'contain',
-        filter: 'drop-shadow(0 0 15px rgba(0, 242, 255, 0.3)) drop-shadow(0 0 5px rgba(99, 102, 241, 0.3))',
-        transform: 'scale(1.1)'
+        filter: 'drop-shadow(0 0 10px rgba(0, 242, 255, 0.2)) drop-shadow(0 0 5px rgba(99, 102, 241, 0.2))'
       }}
     />
   </a>
