@@ -89,7 +89,7 @@ const ChatBot = ({ locale }: { locale: string }) => {
           <span style={{ fontSize: '1.2rem', color: '#fff' }}>×</span>
         ) : (
           <div className={styles.neuralPulse}>
-            <img src="/zrai-logo-removebg-preview.png" alt="Z-R" width="32" height="auto" style={{ filter: 'brightness(0) invert(1)' }} />
+            <img src="/zrai-logo-new.jpg" alt="Z-R" width="40" height="40" style={{ borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(0, 242, 255, 0.3)' }} />
           </div>
         )}
       </div>
@@ -418,13 +418,15 @@ const ParticleEngine = ({ mousePos }: { mousePos: { x: number, y: number, active
 const ZraiBrand = () => (
   <a href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
     <img
-      src="/zrai-logo-removebg-preview.png"
+      src="/zrai-logo-new.jpg"
       alt="Z-RAI Logo"
       width="140"
       height="auto"
       style={{
         objectFit: 'contain',
-        filter: 'drop-shadow(0 0 8px rgba(0, 242, 255, 0.3))'
+        borderRadius: '16px',
+        mixBlendMode: 'screen',
+        filter: 'drop-shadow(0 0 15px rgba(0, 242, 255, 0.2))'
       }}
     />
   </a>
