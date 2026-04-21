@@ -30,13 +30,15 @@ export async function POST(req: Request) {
         { 
           email: validatedData.email, 
           message: validatedData.message,
+          site_name: 'Z-RAI ELITE', // Dedicated column for maximum "prolijidad"
           metadata: {
-            ...validatedData.metadata,
-            siteName: 'Z-RAI ELITE',
+            siteName: 'Z-RAI ELITE', // Keep in metadata too for compatibility
             firstName: validatedData.firstName,
             lastName: validatedData.lastName,
             phone: validatedData.phone,
-            source: 'zrai_portfolio_contact'
+            ...validatedData.metadata,
+            source: 'zrai_portfolio_contact',
+            timestamp: new Date().toISOString()
           }
         }
       ]);
