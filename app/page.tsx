@@ -46,7 +46,18 @@ const ChatBot = ({ locale }: { locale: string }) => {
       if (data.text) {
         setMessages(prev => [...prev, { type: 'bot', text: data.text }]);
         
-        // Smart Scroll Actions (Keep proactive features)
+        // Trigger lead capture after first exchange if not already logged in
+        if (messages.length === 1) {
+          setTimeout(() => {
+            setMessages(prev => [...prev, { 
+              type: 'bot', 
+              text: locale === 'es' ? 'Veo que buscas soluciones serias. Te invito a registrarte para acceder a mi panel de arquitectura completa.' : 'I see you are looking for serious solutions. I invite you to register to access my full architecture panel.' 
+            }]);
+            window.dispatchEvent(new CustomEvent('openModal', { detail: 'register' }));
+          }, 1500);
+        }
+        
+        // Smart Scroll Actions
         if (q.includes('servicio') || q.includes('service')) {
           setTimeout(() => scrollToSection('services'), 3000);
         } else if (q.includes('proceso') || q.includes('process')) {
@@ -466,6 +477,20 @@ export default function Home() {
     document.body.style.overflow = 'hidden';
   };
 
+  useEffect(() => {
+    const handleOpenModal = (e: any) => openModal(e.detail);
+    window.addEventListener('openModal', handleOpenModal);
+    return () => window.removeEventListener('openModal', handleOpenModal);
+  }, []);
+
+  const handleProjectAction = (url: string) => {
+    if (user) {
+      window.open(url, '_blank');
+    } else {
+      openModal('project');
+    }
+  };
+
   const closeModal = () => {
     setModalOpen(false);
     setTimeout(() => setModalStatus('idle'), 300);
@@ -768,7 +793,12 @@ export default function Home() {
                 p.description.toLowerCase().includes(query);
             })
             .map((project: any, idx: number) => (
-              <a href={project.link} target="_blank" rel="noopener noreferrer" key={project.id} className={`${styles.projectCard} ${styles.reveal}`} style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none' }}>
+              <div 
+                key={project.id} 
+                className={`${styles.projectCard} ${styles.reveal}`} 
+                style={{ animationDelay: (0.1 + idx * 0.1) + 's', textDecoration: 'none', cursor: 'pointer' }}
+                onClick={() => handleProjectAction(project.link)}
+              >
                 <div className={styles.projectImagePlaceholder}>
                   <img src={project.image} alt={project.title} className={styles.projectImage} />
                   <div className={styles.projectCategory}>{project.category}</div>
@@ -776,11 +806,11 @@ export default function Home() {
                 <div className={styles.projectContent}>
                   <h3 className={styles.projectTitle}>{project.title}</h3>
                   <p className={styles.projectDesc}>{project.description}</p>
-                  <div className={styles.projectBtn} onClick={(e) => { e.preventDefault(); e.stopPropagation(); openModal('project'); }}>
+                  <div className={styles.projectBtn}>
                     {locale === 'es' ? 'Ver Proyecto' : 'View Project'} ➔
                   </div>
                 </div>
-              </a>
+              </div>
             ))}
         </div>
       </section>
