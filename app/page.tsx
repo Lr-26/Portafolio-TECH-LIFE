@@ -866,30 +866,39 @@ export default function Home() {
           </button>
         </section>
 
-        <div className={styles.footerMainGrid}>
-          <div className={styles.footerInfo}>
+        <div className={styles.footerMainGrid} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '3rem' }}>
+          
+          {/* Col 1: Brand */}
+          <div className={styles.footerInfo} style={{ flex: '1 1 300px' }}>
             <ZraiBrand />
             <p className={styles.footerBrandDesc}>
               {locale === 'es'
                 ? 'Liderando la vanguardia tecnológica con soluciones inteligentes que redefinen lo posible.'
                 : 'Leading the technological vanguard with intelligent solutions that redefine what is possible.'}
             </p>
-            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem' }}>
-              <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
-                <MessageCircle size={24} />
-              </a>
-              <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
-                <Instagram size={24} />
-              </a>
-            </div>
           </div>
 
-          <div className={styles.footerLinksBlock} style={{ gridColumn: 'span 2' }}>
+          {/* Col 2: Navigation */}
+          <div className={styles.footerLinksBlock} style={{ flex: '1 1 150px' }}>
             <h4>{locale === 'es' ? 'Compañía' : 'Company'}</h4>
             <a href="#hero">{locale === 'es' ? 'Sobre Nosotros' : 'About'}</a>
             <a href="#services">{locale === 'es' ? 'Soluciones' : 'Solutions'}</a>
             <a href="#projects">{locale === 'es' ? 'Trabajos' : 'Works'}</a>
           </div>
+
+          {/* Col 3: Connect (Socials) */}
+          <div className={styles.footerLinksBlock} style={{ flex: '1 1 150px' }}>
+            <h4>{locale === 'es' ? 'Conectar' : 'Connect'}</h4>
+            <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.8rem' }}>
+              <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
+                <MessageCircle size={26} />
+              </a>
+              <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
+                <Instagram size={26} />
+              </a>
+            </div>
+          </div>
+          
         </div>
 
         <div className={styles.footerCopyright}>
