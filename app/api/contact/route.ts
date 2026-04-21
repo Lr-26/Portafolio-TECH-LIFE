@@ -3,11 +3,11 @@ import { supabase } from "@/lib/supabase";
 import { z } from "zod";
 
 const ContactSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
   email: z.string().email(),
-  phone: z.string().min(8),
-  message: z.string().min(10),
+  phone: z.string().min(5),
+  message: z.string().min(3),
   metadata: z.record(z.string(), z.any()).optional()
 });
 
