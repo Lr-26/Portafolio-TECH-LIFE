@@ -459,9 +459,10 @@ export default function Home() {
   const [modalStatus, setModalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '', password: '' });
 
-  const openModal = (type: 'consultation'|'project'|'register') => {
+  const openModal = (type: 'consultation'|'project'|'register'|'login') => {
     setModalType(type);
     setModalOpen(true);
+    setModalStatus('idle');
     document.body.style.overflow = 'hidden';
   };
 
@@ -895,23 +896,21 @@ export default function Home() {
                     )}
 
                     {modalType !== 'login' && (
-                      <>
-                        <div style={{ position: 'relative' }}>
-                          <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                          <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-                        </div>
+                      <div style={{ position: 'relative' }}>
+                        <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                        <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                      </div>
+                    )}
                         
-                        {(modalType === 'consultation' || modalType === 'project') && (
-                          <textarea 
-                            required
-                            placeholder={t.contact.form.message} 
-                            value={modalForm.message} 
-                            onChange={e => setModalForm({...modalForm, message: e.target.value})} 
-                            style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
-                          />
-                        )}
-                      </>
-                     )}
+                    {modalType !== 'login' && modalType !== 'register' && (
+                      <textarea 
+                        required
+                        placeholder={t.contact.form.message} 
+                        value={modalForm.message} 
+                        onChange={e => setModalForm({...modalForm, message: e.target.value})} 
+                        style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
+                      />
+                    )}
 
                   <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
                     {modalStatus === 'loading' ? t.contact.form.sending : 
