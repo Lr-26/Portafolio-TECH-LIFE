@@ -30,12 +30,11 @@ export async function POST(req: Request) {
         { 
           email: validatedData.email, 
           message: validatedData.message,
-          site_name: 'Z-RAI ELITE', // Dedicated column for maximum "prolijidad"
+          site_name: 'Z-RAI ELITE',
+          first_name: validatedData.firstName,
+          last_name: validatedData.lastName,
+          phone: validatedData.phone,
           metadata: {
-            siteName: 'Z-RAI ELITE', // Keep in metadata too for compatibility
-            firstName: validatedData.firstName,
-            lastName: validatedData.lastName,
-            phone: validatedData.phone,
             ...validatedData.metadata,
             source: 'zrai_portfolio_contact',
             timestamp: new Date().toISOString()
