@@ -717,8 +717,25 @@ export default function Home() {
 
         <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuVisible : ""}`}>
           <div className={styles.mobileNavLinks}>
-            <button className={styles.loginBtn} onClick={() => { setIsMenuOpen(false); openModal('register'); }}>{t.nav.login}</button>
-            <button className={styles.registerBtn} onClick={() => { setIsMenuOpen(false); openModal('register'); }}>{t.nav.register}</button>
+            {!user ? (
+              <>
+                <button className={styles.loginBtn} onClick={() => { setIsMenuOpen(false); openModal('login'); }}>{t.nav.login}</button>
+                <button className={styles.registerBtn} onClick={() => { setIsMenuOpen(false); openModal('register'); }}>{t.nav.register}</button>
+              </>
+            ) : (
+              <>
+                <div style={{ color: '#fff', fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.8 }}>
+                  Conectado como: {user.email?.split('@')[0]}
+                </div>
+                <button className={styles.loginBtn} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }} onClick={() => { 
+                  localStorage.removeItem('zr_id');
+                  setUser(null);
+                  setIsMenuOpen(false); 
+                }}>
+                  {locale === 'es' ? 'Cerrar Sesión' : 'Log Out'}
+                </button>
+              </>
+            )}
             <div className={styles.mobileLang}>
               <span onClick={() => { setLocale("es"); setIsMenuOpen(false); }}>ESP</span>
               <span onClick={() => { setLocale("en"); setIsMenuOpen(false); }}>ENG</span>

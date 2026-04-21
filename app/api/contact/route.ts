@@ -24,6 +24,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, mode: 'local' });
     }
 
+    // Skip Supabase insert if the user is just logging in (to avoid duplicate leads)
+    if (validatedData.metadata?.type === 'login') {
+      return NextResponse.json({ 
+        success: true, 
+        message: "Neural session authenticated successfully." 
+      }, { status: 200 });
+    }
+
     const { error } = await supabase
       .from('leads')
       .insert([
