@@ -1424,3 +1424,19 @@
   color: #64748b;
   font-weight: 500;
 }
+
+/* --- RESPONSIVE PROJECTS (MOBILE POLISH) --- */
+@media (max-width: 640px) {
+  .projectsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .projectImagePlaceholder {
+    height: 220px; /* More cinematic impact on full width mobile */
+  }
+
+  .projectContent {
+    padding: 1.25rem;
+  }
+}

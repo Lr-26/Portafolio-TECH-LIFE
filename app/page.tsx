@@ -67,7 +67,7 @@ const ChatBot = ({ locale }: { locale: string }) => {
         }
       }
     } catch (error) {
-      console.error("Neural Link Error:", error);
+      // Neural silence logic: no sensitive data leaked to console
       setMessages(prev => [...prev, { 
         type: 'bot', 
         text: locale === 'es' ? 'Error de conexión neuronal.' : 'Neural connection error.' 
@@ -440,20 +440,12 @@ export default function Home() {
   const lastActivityRef = useRef<number>(Date.now());
 
   useEffect(() => {
-    if (!supabase) return;
-
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        setModalOpen(false); 
-      }
-    });
+    // Session management for simplified access
+    const savedEmail = localStorage.getItem('zr_id');
+    if (savedEmail) {
+      setUser({ email: savedEmail });
+    }
+  }, []);
 
     // Inactivity Guard Logic
     const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 Minutes
@@ -464,10 +456,8 @@ export default function Home() {
 
     const inactivityInterval = setInterval(() => {
       if (user && (Date.now() - lastActivityRef.current > INACTIVITY_LIMIT)) {
-        console.log("Session expired due to inactivity");
         supabase.auth.signOut();
         setIsUserMenuOpen(false);
-        // Optional: Trigger a notification or modal
       }
     }, 60000); // Check every minute
 
@@ -489,7 +479,7 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'consultation'|'project'|'register'|'login'>('consultation');
   const [modalStatus, setModalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '', password: '' });
+  const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
 
   const openModal = (type: 'consultation'|'project'|'register'|'login') => {
     setModalType(type);
@@ -520,7 +510,6 @@ export default function Home() {
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase) return;
     setModalStatus('loading');
     
     // Auto-Trim values for security and integrity
@@ -529,36 +518,11 @@ export default function Home() {
       firstName: modalForm.firstName.trim(),
       lastName: modalForm.lastName.trim(),
       email: modalForm.email.trim().toLowerCase(),
-      password: modalForm.password.trim(),
       phone: modalForm.phone.trim()
     };
 
     try {
-      if (modalType === 'register') {
-        const { error } = await supabase.auth.signUp({
-          email: trimmedForm.email,
-          password: trimmedForm.password,
-          options: {
-            data: {
-              siteName: 'Z-RAI ELITE',
-              first_name: trimmedForm.firstName,
-              last_name: trimmedForm.lastName,
-              phone: trimmedForm.phone,
-            }
-          }
-        });
-        if (error) throw error;
-        setModalStatus('success');
-      } else if (modalType === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: trimmedForm.email,
-          password: trimmedForm.password,
-        });
-        if (error) throw error;
-        setModalStatus('idle');
-        setModalOpen(false);
-      } else {
-        // Handle normal contact/consultation
+        // Handle all capture types as Lead generation
         const response = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -567,7 +531,7 @@ export default function Home() {
             lastName: trimmedForm.lastName,
             email: trimmedForm.email,
             phone: trimmedForm.phone,
-            message: trimmedForm.message,
+            message: trimmedForm.message || `[Session Initialized via ${modalType.toUpperCase()}]`,
             metadata: {
               siteName: 'Z-RAI ELITE',
               company: trimmedForm.company,
@@ -581,15 +545,22 @@ export default function Home() {
 
         if (response.ok) {
           setModalStatus('success');
-          setModalForm({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '', password: '' });
+          // Update local session
+          setUser({ email: trimmedForm.email });
+          localStorage.setItem('zr_id', trimmedForm.email);
+          setModalForm({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
+          
+          if (modalType === 'login' || modalType === 'register') {
+            setTimeout(() => {
+              setModalOpen(false);
+              setModalStatus('idle');
+            }, 1500);
+          }
         } else {
           setModalStatus('error');
         }
-      }
     } catch (error: any) {
-      console.error("Auth/Contact Error:", error);
       setModalStatus('error');
-      // Briefly show error then reset to idle to let them try again
       setTimeout(() => setModalStatus('idle'), 3000);
     }
   };
@@ -713,8 +684,9 @@ export default function Home() {
                         <span className={styles.userStatus}>Status: Active</span>
                       </div>
                       <div className={styles.dropdownDivider} />
-                      <button className={styles.dropdownItem} onClick={async () => { 
-                        if (supabase) await supabase.auth.signOut();
+                      <button className={styles.dropdownItem} onClick={() => { 
+                        localStorage.removeItem('zr_id');
+                        setUser(null);
                         setIsUserMenuOpen(false); 
                       }}>
                         <LogOut size={16} />
@@ -957,12 +929,6 @@ export default function Home() {
                     <input type="tel" required placeholder={t.contact.form.phone} value={modalForm.phone} onChange={e => setModalForm({...modalForm, phone: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                   </div>
 
-                    {(modalType === 'register' || modalType === 'login') && (
-                      <div style={{ position: 'relative' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        <input type="password" required placeholder={locale === 'es' ? 'Contraseña' : 'Password'} value={modalForm.password} onChange={e => setModalForm({...modalForm, password: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-                      </div>
-                    )}
 
                     {modalType !== 'login' && (
                       <div style={{ position: 'relative' }}>
@@ -971,15 +937,13 @@ export default function Home() {
                       </div>
                     )}
                         
-                    {modalType !== 'login' && modalType !== 'register' && (
-                      <textarea 
-                        required
-                        placeholder={t.contact.form.message} 
-                        value={modalForm.message} 
-                        onChange={e => setModalForm({...modalForm, message: e.target.value})} 
-                        style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
-                      />
-                    )}
+                    <textarea 
+                      required
+                      placeholder={t.contact.form.message} 
+                      value={modalForm.message} 
+                      onChange={e => setModalForm({...modalForm, message: e.target.value})} 
+                      style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
+                    />
 
                   <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
                     {modalStatus === 'loading' ? t.contact.form.sending : 
