@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
-import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut } from "lucide-react";
+import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut, Instagram, MessageCircle } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 /* --- NEW CHATBOT COMPONENT --- */
@@ -875,8 +875,12 @@ export default function Home() {
                 : 'Leading the technological vanguard with intelligent solutions that redefine what is possible.'}
             </p>
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem' }}>
-              <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, textDecoration: 'none', transition: '0.3s', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 600 }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>WHATSAPP</a>
-              <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, textDecoration: 'none', transition: '0.3s', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 600 }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>INSTAGRAM</a>
+              <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
+                <MessageCircle size={24} />
+              </a>
+              <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
+                <Instagram size={24} />
+              </a>
             </div>
           </div>
 
