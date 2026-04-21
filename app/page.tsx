@@ -874,33 +874,17 @@ export default function Home() {
                 ? 'Liderando la vanguardia tecnológica con soluciones inteligentes que redefinen lo posible.'
                 : 'Leading the technological vanguard with intelligent solutions that redefine what is possible.'}
             </p>
-            <div className={styles.footerSocialsList}>
-              <a href="#" className={styles.footerSocialLink}>IN</a>
-              <a href="#" className={styles.footerSocialLink}>X</a>
-              <a href="#" className={styles.footerSocialLink}>GH</a>
+            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem' }}>
+              <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, textDecoration: 'none', transition: '0.3s', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 600 }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>WHATSAPP</a>
+              <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, textDecoration: 'none', transition: '0.3s', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 600 }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>INSTAGRAM</a>
             </div>
           </div>
 
-          <div className={styles.footerLinksBlock}>
+          <div className={styles.footerLinksBlock} style={{ gridColumn: 'span 2' }}>
             <h4>{locale === 'es' ? 'Compañía' : 'Company'}</h4>
             <a href="#hero">{locale === 'es' ? 'Sobre Nosotros' : 'About'}</a>
             <a href="#services">{locale === 'es' ? 'Soluciones' : 'Solutions'}</a>
             <a href="#projects">{locale === 'es' ? 'Trabajos' : 'Works'}</a>
-          </div>
-
-          <div className={styles.footerLinksBlock}>
-            <h4>{locale === 'es' ? 'Soporte' : 'Support'}</h4>
-            <a href="#" onClick={() => window.open('/api/whatsapp', '_blank')}>{locale === 'es' ? 'Consultoría' : 'Consulting'}</a>
-            <a href="#">{locale === 'es' ? 'Legal' : 'Legal'}</a>
-            <a href="#">API</a>
-          </div>
-
-          <div className={styles.footerNewsletter}>
-            <h4>Newsletter</h4>
-            <div className={styles.newsletterInputWrap}>
-              <input type="email" placeholder="email@agency.com" suppressHydrationWarning />
-              <button>→</button>
-            </div>
           </div>
         </div>
 
