@@ -3,8 +3,10 @@ import { supabase } from "@/lib/supabase";
 import { z } from "zod";
 
 const ContactSchema = z.object({
+  firstName: z.string().min(2),
+  lastName: z.string().min(2),
   email: z.string().email(),
-  name: z.string().min(2).optional(),
+  phone: z.string().min(8),
   message: z.string().min(10),
   metadata: z.record(z.string(), z.any()).optional()
 });
@@ -30,6 +32,9 @@ export async function POST(req: Request) {
           message: validatedData.message,
           metadata: {
             ...validatedData.metadata,
+            firstName: validatedData.firstName,
+            lastName: validatedData.lastName,
+            phone: validatedData.phone,
             source: 'zrai_portfolio_contact'
           }
         }

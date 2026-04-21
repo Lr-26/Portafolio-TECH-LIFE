@@ -418,7 +418,7 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
   const [projectSearch, setProjectSearch] = useState('');
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
   const heroRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -434,7 +434,7 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'consultation'|'project'|'register'>('consultation');
   const [modalStatus, setModalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [modalForm, setModalForm] = useState({ name: '', email: '', company: '', role: '', message: '' });
+  const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
 
   const openModal = (type: 'consultation'|'project'|'register') => {
     setModalType(type);
@@ -457,8 +457,10 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: modalForm.name,
+          firstName: modalForm.firstName,
+          lastName: modalForm.lastName,
           email: modalForm.email,
+          phone: modalForm.phone,
           message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
           metadata: {
             company: modalForm.company,
@@ -472,7 +474,7 @@ export default function Home() {
 
       if (response.ok) {
         setModalStatus('success');
-        setModalForm({ name: '', email: '', company: '', role: '', message: '' });
+        setModalForm({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
       } else {
         setModalStatus('error');
       }
@@ -536,7 +538,7 @@ export default function Home() {
 
       if (response.ok) {
         setContactStatus('success');
-        setFormData({ name: '', email: '', message: '' });
+        setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
         setTimeout(() => setContactStatus('idle'), 5000);
       } else {
         setContactStatus('error');
@@ -680,56 +682,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- PROFESSIONAL CONTACT SECTION --- */}
-      <section id="contact" className={styles.contactSection}>
-        <div className={styles.contactContainer}>
-          <div className={styles.contactInfo}>
-            <h2 className={styles.reveal}>{t.contact.title} <span className="gradient-text">{t.contact.accent}</span></h2>
-            <p className={styles.reveal} style={{ animationDelay: '0.1s' }}>{t.contact.description}</p>
-          </div>
-          <form className={`${styles.contactForm} ${styles.reveal}`} style={{ animationDelay: '0.2s' }} onSubmit={handleContactSubmit}>
-            <div className={styles.formGroup}>
-              <label>{t.contact.form.name}</label>
-              <input 
-                type="text" 
-                className={styles.formInput} 
-                required 
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t.contact.form.email}</label>
-              <input 
-                type="email" 
-                className={styles.formInput} 
-                required 
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t.contact.form.message}</label>
-              <textarea 
-                className={styles.formTextarea} 
-                required 
-                value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-              />
-            </div>
-            <button 
-              type="submit" 
-              className={styles.submitBtn} 
-              disabled={contactStatus === 'loading'}
-            >
-              {contactStatus === 'loading' ? t.contact.form.sending : t.contact.form.submit}
-            </button>
-            {contactStatus === 'success' && <p style={{ color: 'var(--primary)', fontSize: '0.8rem', textAlign: 'center' }}>{t.contact.form.success}</p>}
-            {contactStatus === 'error' && <p style={{ color: '#ef4444', fontSize: '0.8rem', textAlign: 'center' }}>{t.contact.form.error}</p>}
-          </form>
-        </div>
-      </section>
-
       <footer className={styles.footerMega}>
         <div className={styles.footerGlow} />
         <section className={styles.footerTop}>
@@ -737,8 +689,8 @@ export default function Home() {
             <h2 className={styles.footerCtaTitle}>{locale === 'es' ? '¿Listo para evolucionar?' : 'Ready to evolve?'}</h2>
             <p className={styles.footerCtaDesc}>{locale === 'es' ? 'Hablemos sobre tu próximo proyecto de IA.' : "Let's talk about your next AI project."}</p>
           </div>
-          <button className="btn-primary" style={{ padding: '1rem 3rem' }} onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-            {locale === 'es' ? 'Empezar ahora' : 'Get Started'}
+          <button className="btn-primary" style={{ padding: '1rem 3rem' }} onClick={() => openModal('consultation')}>
+            {locale === 'es' ? 'Consultar' : 'Consult Now'}
           </button>
         </section>
 
@@ -809,30 +761,44 @@ export default function Home() {
                 <p style={{ color: '#94a3b8', marginBottom: '2rem', fontSize: '0.9rem' }}>{locale === 'es' ? 'Ingresa tus credenciales para establecer la conexión con nuestro equipo técnico.' : 'Enter your credentials to establish a connection with our technical team.'}</p>
                 
                 <form onSubmit={handleModalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                  <div style={{ position: 'relative' }}>
-                    <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="text" required placeholder={locale === 'es' ? 'Nombre completo' : 'Full name'} value={modalForm.name} onChange={e => setModalForm({...modalForm, name: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <Mail size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="email" required placeholder={locale === 'es' ? 'Correo electrónico' : 'Email address'} value={modalForm.email} onChange={e => setModalForm({...modalForm, email: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '14px 15px 14px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ position: 'relative', flex: 1 }}>
+                      <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                      <input type="text" required placeholder={t.contact.form.firstName} value={modalForm.firstName} onChange={e => setModalForm({...modalForm, firstName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                    </div>
+                    <div style={{ position: 'relative', flex: 1 }}>
+                      <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                      <input type="text" required placeholder={t.contact.form.lastName} value={modalForm.lastName} onChange={e => setModalForm({...modalForm, lastName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                    </div>
                   </div>
                   
-                  {modalType === 'consultation' && (
+                  <div style={{ position: 'relative' }}>
+                    <Mail size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="email" required placeholder={t.contact.form.email} value={modalForm.email} onChange={e => setModalForm({...modalForm, email: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+
+                  <div style={{ position: 'relative' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <input type="tel" required placeholder={t.contact.form.phone} value={modalForm.phone} onChange={e => setModalForm({...modalForm, phone: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+
+                  <div style={{ position: 'relative' }}>
+                    <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  </div>
+                  
+                  {(modalType === 'consultation' || modalType === 'project') && (
                     <textarea 
-                      placeholder={locale === 'es' ? 'Breve descripción de requerimientos...' : 'Brief description of requirements...'} 
+                      required
+                      placeholder={t.contact.form.message} 
                       value={modalForm.message} 
                       onChange={e => setModalForm({...modalForm, message: e.target.value})} 
                       style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
                     />
                   )}
 
-                  <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '1rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-                    {modalStatus === 'loading' ? (locale === 'es' ? 'Procesando...' : 'Processing...') : (locale === 'es' ? 'Establecer Enlace' : 'Establish Link')}
+                  <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+                    {modalStatus === 'loading' ? t.contact.form.sending : (locale === 'es' ? 'Consultar' : 'Consult Now')}
                     {modalStatus !== 'loading' && <ChevronRight size={18} />}
                   </button>
                 </form>

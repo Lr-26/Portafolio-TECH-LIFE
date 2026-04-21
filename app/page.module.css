@@ -1188,6 +1188,19 @@
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
 }
 
+.formRow {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .formRow {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;

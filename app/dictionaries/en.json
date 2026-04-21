@@ -107,10 +107,12 @@
     "description": "Book a discovery call to see how AI can transform your workflow.",
     "button": "Initiate Consultation",
     "form": {
-      "name": "Full name",
+      "firstName": "First name",
+      "lastName": "Last name",
       "email": "Corporate email",
+      "phone": "Phone number",
       "message": "Project or technical inquiry",
-      "submit": "Submit Requirement",
+      "submit": "Consult Now",
       "sending": "Processing...",
       "success": "Inquiry sent successfully.",
       "error": "Failed to process submission."

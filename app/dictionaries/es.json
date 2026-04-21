@@ -107,10 +107,12 @@
     "description": "Reserve una llamada de descubrimiento para ver cómo la IA puede transformar su flujo de trabajo.",
     "button": "Iniciar Consulta",
     "form": {
-      "name": "Nombre completo",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
       "email": "Correo corporativo",
+      "phone": "Número de teléfono",
       "message": "Proyecto o consulta técnica",
-      "submit": "Enviar Requerimiento",
+      "submit": "Consultar",
       "sending": "Procesando...",
       "success": "Consulta enviada con éxito.",
       "error": "Error al procesar el envío."
