@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { z } from "zod";
 
+// --- Enterprise-Grade Security Sanitizer ---
+const sanitizeHtml = (str: string) => {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>?/gm, '').replace(/[$;{}()]/g, '').trim(); 
+};
+
 const ContactSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().min(5),
-  message: z.string().min(3),
+  firstName: z.string().min(1, "Name is required").max(60, "Name too long").transform(sanitizeHtml),
+  lastName: z.string().min(1).max(60).transform(sanitizeHtml),
+  email: z.string().email("Invalid email format").max(100).transform(str => sanitizeHtml(str).toLowerCase()),
+  phone: z.string().min(5).max(30).transform(sanitizeHtml),
+  message: z.string().min(3).max(3000, "Message exceeds allowed limit").transform(sanitizeHtml),
   metadata: z.record(z.string(), z.any()).optional()
 });
 
