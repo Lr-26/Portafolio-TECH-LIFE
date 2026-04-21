@@ -437,6 +437,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const lastActivityRef = useRef<number>(Date.now());
 
   useEffect(() => {
     if (!supabase) return;
@@ -450,12 +451,32 @@ export default function Home() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        setModalOpen(false); // Close modal if logged in
+        setModalOpen(false); 
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // Inactivity Guard Logic
+    const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 Minutes
+    const updateActivity = () => { lastActivityRef.current = Date.now(); };
+    
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    activityEvents.forEach(evt => document.addEventListener(evt, updateActivity));
+
+    const inactivityInterval = setInterval(() => {
+      if (user && (Date.now() - lastActivityRef.current > INACTIVITY_LIMIT)) {
+        console.log("Session expired due to inactivity");
+        supabase.auth.signOut();
+        setIsUserMenuOpen(false);
+        // Optional: Trigger a notification or modal
+      }
+    }, 60000); // Check every minute
+
+    return () => {
+      subscription.unsubscribe();
+      activityEvents.forEach(evt => document.removeEventListener(evt, updateActivity));
+      clearInterval(inactivityInterval);
+    };
+  }, [user]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
