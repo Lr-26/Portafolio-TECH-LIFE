@@ -484,6 +484,7 @@ export default function Home() {
           password: modalForm.password,
           options: {
             data: {
+              siteName: 'Z-RAI ELITE',
               first_name: modalForm.firstName,
               last_name: modalForm.lastName,
               phone: modalForm.phone,
@@ -512,6 +513,7 @@ export default function Home() {
             phone: modalForm.phone,
             message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
             metadata: {
+              siteName: 'Z-RAI ELITE',
               company: modalForm.company,
               role: modalForm.role,
               type: modalType,

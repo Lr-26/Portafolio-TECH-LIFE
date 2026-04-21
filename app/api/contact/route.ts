@@ -32,6 +32,7 @@ export async function POST(req: Request) {
           message: validatedData.message,
           metadata: {
             ...validatedData.metadata,
+            siteName: 'Z-RAI ELITE',
             firstName: validatedData.firstName,
             lastName: validatedData.lastName,
             phone: validatedData.phone,
