@@ -18,10 +18,26 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Z-RAI | Premium AI Solutions",
-  description: "Professional AI Development and Automation Services. Transforming business with cutting-edge artificial intelligence.",
+  title: "Z-RAI | Elite Architecture & AI",
+  description: "Diseñamos la arquitectura técnica de las empresas que liderarán la próxima década. Software de alto rendimiento e IA estratégica.",
   icons: {
     icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Z-RAI | Elite Software & AI",
+    description: "Diseñamos la arquitectura técnica de las empresas que liderarán la próxima década. Software de alto rendimiento e IA estratégica.",
+    url: "https://z-rai.vercel.app",
+    siteName: "Z-RAI",
+    images: [
+      {
+        url: "https://z-rai.vercel.app/og-image.jpg", // TBD if he uploads one, fallback is automatic usually or defaults to generic
+        width: 1200,
+        height: 630,
+        alt: "Z-RAI Elite Software",
+      },
+    ],
+    locale: "es_ES",
+    type: "website",
   },
 };
 
