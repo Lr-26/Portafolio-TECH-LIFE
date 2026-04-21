@@ -447,6 +447,7 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
     // Inactivity Guard Logic
     const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 Minutes
     const updateActivity = () => { lastActivityRef.current = Date.now(); };
@@ -456,13 +457,13 @@ export default function Home() {
 
     const inactivityInterval = setInterval(() => {
       if (user && (Date.now() - lastActivityRef.current > INACTIVITY_LIMIT)) {
-        supabase.auth.signOut();
+        localStorage.removeItem('zr_id');
+        setUser(null);
         setIsUserMenuOpen(false);
       }
     }, 60000); // Check every minute
 
     return () => {
-      subscription.unsubscribe();
       activityEvents.forEach(evt => document.removeEventListener(evt, updateActivity));
       clearInterval(inactivityInterval);
     };
