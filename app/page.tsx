@@ -421,7 +421,7 @@ const ZraiBrand = () => (
       src="/zrai-logo-transparent.png"
       alt="Z-RAI Logo"
       style={{
-        height: '38px',
+        height: '44px',
         width: 'auto',
         objectFit: 'contain',
         filter: 'drop-shadow(0 0 10px rgba(0, 242, 255, 0.2)) drop-shadow(0 0 5px rgba(99, 102, 241, 0.2))'
