@@ -523,17 +523,27 @@ export default function Home() {
     if (!supabase) return;
     setModalStatus('loading');
     
+    // Auto-Trim values for security and integrity
+    const trimmedForm = {
+      ...modalForm,
+      firstName: modalForm.firstName.trim(),
+      lastName: modalForm.lastName.trim(),
+      email: modalForm.email.trim().toLowerCase(),
+      password: modalForm.password.trim(),
+      phone: modalForm.phone.trim()
+    };
+
     try {
       if (modalType === 'register') {
         const { error } = await supabase.auth.signUp({
-          email: modalForm.email,
-          password: modalForm.password,
+          email: trimmedForm.email,
+          password: trimmedForm.password,
           options: {
             data: {
               siteName: 'Z-RAI ELITE',
-              first_name: modalForm.firstName,
-              last_name: modalForm.lastName,
-              phone: modalForm.phone,
+              first_name: trimmedForm.firstName,
+              last_name: trimmedForm.lastName,
+              phone: trimmedForm.phone,
             }
           }
         });
@@ -541,8 +551,8 @@ export default function Home() {
         setModalStatus('success');
       } else if (modalType === 'login') {
         const { error } = await supabase.auth.signInWithPassword({
-          email: modalForm.email,
-          password: modalForm.password,
+          email: trimmedForm.email,
+          password: trimmedForm.password,
         });
         if (error) throw error;
         setModalStatus('idle');
@@ -553,15 +563,15 @@ export default function Home() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            firstName: modalForm.firstName,
-            lastName: modalForm.lastName,
-            email: modalForm.email,
-            phone: modalForm.phone,
-            message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
+            firstName: trimmedForm.firstName,
+            lastName: trimmedForm.lastName,
+            email: trimmedForm.email,
+            phone: trimmedForm.phone,
+            message: trimmedForm.message,
             metadata: {
               siteName: 'Z-RAI ELITE',
-              company: modalForm.company,
-              role: modalForm.role,
+              company: trimmedForm.company,
+              role: trimmedForm.role,
               type: modalType,
               url: window.location.href,
               timestamp: new Date().toISOString()
@@ -576,9 +586,11 @@ export default function Home() {
           setModalStatus('error');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Auth/Contact Error:", error);
       setModalStatus('error');
+      // Briefly show error then reset to idle to let them try again
+      setTimeout(() => setModalStatus('idle'), 3000);
     }
   };
 
@@ -917,7 +929,11 @@ export default function Home() {
                    modalType === 'project' ? (locale === 'es' ? 'Desbloquear Proyecto' : 'Unlock Project') :
                    (locale === 'es' ? 'Iniciar Sesión' : 'Log In')}
                 </h3>
-                <p style={{ color: '#94a3b8', marginBottom: '2rem', fontSize: '0.9rem' }}>{locale === 'es' ? 'Ingresa tus credenciales para establecer la conexión con nuestro equipo técnico.' : 'Enter your credentials to establish a connection with our technical team.'}</p>
+                <p style={{ color: modalStatus === 'error' ? '#ff3e3e' : '#94a3b8', marginBottom: '2rem', fontSize: '0.9rem', transition: '0.3s' }}>
+                  {modalStatus === 'error' 
+                    ? (locale === 'es' ? 'Error: Credenciales inválidas o datos mal formados.' : 'Error: Invalid credentials or malformed data.')
+                    : (locale === 'es' ? 'Ingresa tus credenciales para establecer la conexión con nuestro equipo técnico.' : 'Enter your credentials to establish a connection with our technical team.')}
+                </p>
                 
                 <form onSubmit={handleModalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                   <div style={{ display: 'flex', gap: '1rem' }}>
