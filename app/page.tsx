@@ -653,7 +653,16 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <nav className={`${styles.nav} ${!showNav ? styles.navHidden : ""} ${isMenuOpen ? styles.navExpanded : ""}`}>
+      
+      {/* Hover capture zone to unhide navbar */}
+      {!showNav && (
+        <div 
+          onMouseEnter={() => setShowNav(true)}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '40px', zIndex: 99999 }} 
+        />
+      )}
+
+      <nav onMouseLeave={() => { if(window.scrollY > 50) setShowNav(false); }} className={`${styles.nav} ${!showNav ? styles.navHidden : ""} ${isMenuOpen ? styles.navExpanded : ""}`}>
         <ZraiBrand />
 
         <div className={styles.navDesktop}>
