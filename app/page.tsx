@@ -77,7 +77,14 @@ const ChatBot = ({ locale }: { locale: string }) => {
 
   return (
     <>
-      <div className={styles.chatFab} onClick={() => setIsOpen(!isOpen)}>
+      <div className={styles.chatFab} onClick={() => {
+        setIsOpen(!isOpen);
+        if (!isOpen) {
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('openModal', { detail: 'consultation' }));
+          }, 300);
+        }
+      }}>
         {isOpen ? (
           <span style={{ fontSize: '1.2rem', color: '#fff' }}>×</span>
         ) : (
