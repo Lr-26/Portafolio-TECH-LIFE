@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
-import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut, Instagram, MessageCircle } from "lucide-react";
+import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 /* --- NEW CHATBOT COMPONENT --- */
@@ -891,10 +891,16 @@ export default function Home() {
             <h4>{locale === 'es' ? 'Conectar' : 'Connect'}</h4>
             <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.8rem' }}>
               <a href="/api/whatsapp" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
-                <MessageCircle size={26} />
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
               </a>
               <a href="#" target="_blank" style={{ color: '#fff', opacity: 0.5, transition: '0.3s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.5'}>
-                <Instagram size={26} />
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
               </a>
             </div>
           </div>
