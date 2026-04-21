@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useLanguage } from "./context/LanguageContext";
 import { X, CheckCircle, ChevronRight, Mail, User, Building, UserCircle, LogOut } from "lucide-react";
+import { supabase } from "../lib/supabase";
 
 /* --- NEW CHATBOT COMPONENT --- */
 const ChatBot = ({ locale }: { locale: string }) => {
@@ -422,9 +423,28 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [user, setUser] = useState<any>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setModalOpen(false); // Close modal if logged in
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -435,9 +455,9 @@ export default function Home() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'consultation'|'project'|'register'>('consultation');
+  const [modalType, setModalType] = useState<'consultation'|'project'|'register'|'login'>('consultation');
   const [modalStatus, setModalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
+  const [modalForm, setModalForm] = useState({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '', password: '' });
 
   const openModal = (type: 'consultation'|'project'|'register') => {
     setModalType(type);
@@ -453,35 +473,62 @@ export default function Home() {
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) return;
     setModalStatus('loading');
     
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: modalForm.firstName,
-          lastName: modalForm.lastName,
+      if (modalType === 'register') {
+        const { error } = await supabase.auth.signUp({
           email: modalForm.email,
-          phone: modalForm.phone,
-          message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
-          metadata: {
-            company: modalForm.company,
-            role: modalForm.role,
-            type: modalType,
-            url: window.location.href,
-            timestamp: new Date().toISOString()
+          password: modalForm.password,
+          options: {
+            data: {
+              first_name: modalForm.firstName,
+              last_name: modalForm.lastName,
+              phone: modalForm.phone,
+            }
           }
-        })
-      });
-
-      if (response.ok) {
+        });
+        if (error) throw error;
         setModalStatus('success');
-        setModalForm({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '' });
+      } else if (modalType === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: modalForm.email,
+          password: modalForm.password,
+        });
+        if (error) throw error;
+        setModalStatus('idle');
+        setModalOpen(false);
       } else {
-        setModalStatus('error');
+        // Handle normal contact/consultation
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: modalForm.firstName,
+            lastName: modalForm.lastName,
+            email: modalForm.email,
+            phone: modalForm.phone,
+            message: modalForm.message || `[${modalType.toUpperCase()} INQUIRY] Auto-generated message from modal.`,
+            metadata: {
+              company: modalForm.company,
+              role: modalForm.role,
+              type: modalType,
+              url: window.location.href,
+              timestamp: new Date().toISOString()
+            }
+          })
+        });
+
+        if (response.ok) {
+          setModalStatus('success');
+          setModalForm({ firstName: '', lastName: '', email: '', phone: '', company: '', role: '', message: '', password: '' });
+        } else {
+          setModalStatus('error');
+        }
       }
     } catch (error) {
+      console.error("Auth/Contact Error:", error);
       setModalStatus('error');
     }
   };
@@ -589,7 +636,7 @@ export default function Home() {
                 <div className={styles.userDropdown}>
                   {!user ? (
                     <>
-                      <button className={styles.dropdownItem} onClick={() => { setIsUserMenuOpen(false); openModal('register'); }}>
+                      <button className={styles.dropdownItem} onClick={() => { setIsUserMenuOpen(false); openModal('login'); }}>
                         <User size={16} />
                         {t.nav.login}
                       </button>
@@ -597,23 +644,18 @@ export default function Home() {
                         <CheckCircle size={16} />
                         {t.nav.register}
                       </button>
-                      {/* Demo: Login action */}
-                      <button 
-                        className={styles.dropdownItem} 
-                        style={{ borderTop: '1px solid rgba(255,255,255,0.05)', color: 'var(--primary)' }}
-                        onClick={() => { setUser({ name: 'Diego' }); setIsUserMenuOpen(false); }}
-                      >
-                        [Demo Login]
-                      </button>
                     </>
                   ) : (
                     <>
                       <div className={styles.userProfileInfo}>
-                        <span className={styles.userName}>{user.name}</span>
-                        <span className={styles.userStatus}>Status: Pro</span>
+                        <span className={styles.userName}>{user.email?.split('@')[0]}</span>
+                        <span className={styles.userStatus}>Status: Active</span>
                       </div>
                       <div className={styles.dropdownDivider} />
-                      <button className={styles.dropdownItem} onClick={() => { setUser(null); setIsUserMenuOpen(false); }}>
+                      <button className={styles.dropdownItem} onClick={async () => { 
+                        if (supabase) await supabase.auth.signOut();
+                        setIsUserMenuOpen(false); 
+                      }}>
                         <LogOut size={16} />
                         {locale === 'es' ? 'Cerrar Sesión' : 'Log Out'}
                       </button>
@@ -815,7 +857,12 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '0.5rem' }}>{modalType === 'consultation' ? (locale === 'es' ? 'Protocolo de Consulta' : 'Consultation Protocol') : (locale === 'es' ? 'Desbloquear Proyecto' : 'Unlock Project')}</h3>
+                <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '0.5rem' }}>
+                  {modalType === 'consultation' ? (locale === 'es' ? 'Protocolo de Consulta' : 'Consultation Protocol') : 
+                   modalType === 'register' ? (locale === 'es' ? 'Crea tu Cuenta' : 'Create Account') :
+                   modalType === 'project' ? (locale === 'es' ? 'Desbloquear Proyecto' : 'Unlock Project') :
+                   (locale === 'es' ? 'Iniciar Sesión' : 'Log In')}
+                </h3>
                 <p style={{ color: '#94a3b8', marginBottom: '2rem', fontSize: '0.9rem' }}>{locale === 'es' ? 'Ingresa tus credenciales para establecer la conexión con nuestro equipo técnico.' : 'Enter your credentials to establish a connection with our technical team.'}</p>
                 
                 <form onSubmit={handleModalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -840,23 +887,37 @@ export default function Home() {
                     <input type="tel" required placeholder={t.contact.form.phone} value={modalForm.phone} onChange={e => setModalForm({...modalForm, phone: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                   </div>
 
-                  <div style={{ position: 'relative' }}>
-                    <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-                  </div>
-                  
-                  {(modalType === 'consultation' || modalType === 'project') && (
-                    <textarea 
-                      required
-                      placeholder={t.contact.form.message} 
-                      value={modalForm.message} 
-                      onChange={e => setModalForm({...modalForm, message: e.target.value})} 
-                      style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
-                    />
-                  )}
+                    {(modalType === 'register' || modalType === 'login') && (
+                      <div style={{ position: 'relative' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <input type="password" required placeholder={locale === 'es' ? 'Contraseña' : 'Password'} value={modalForm.password} onChange={e => setModalForm({...modalForm, password: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                      </div>
+                    )}
+
+                    {modalType !== 'login' && (
+                      <>
+                        <div style={{ position: 'relative' }}>
+                          <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                          <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                        </div>
+                        
+                        {(modalType === 'consultation' || modalType === 'project') && (
+                          <textarea 
+                            required
+                            placeholder={t.contact.form.message} 
+                            value={modalForm.message} 
+                            onChange={e => setModalForm({...modalForm, message: e.target.value})} 
+                            style={{ width: '100%', padding: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', minHeight: '100px', resize: 'vertical' }} 
+                          />
+                        )}
+                      </>
+                     )}
 
                   <button type="submit" className="btn-primary" disabled={modalStatus === 'loading'} style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-                    {modalStatus === 'loading' ? t.contact.form.sending : (locale === 'es' ? 'Consultar' : 'Consult Now')}
+                    {modalStatus === 'loading' ? t.contact.form.sending : 
+                     (modalType === 'register' ? (locale === 'es' ? 'Crear Cuenta' : 'Create Account') :
+                      modalType === 'login' ? (locale === 'es' ? 'Entrar' : 'Sign In') :
+                      (locale === 'es' ? 'Consultar' : 'Consult Now'))}
                     {modalStatus !== 'loading' && <ChevronRight size={18} />}
                   </button>
                 </form>
