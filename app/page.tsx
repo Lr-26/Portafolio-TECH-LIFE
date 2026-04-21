@@ -948,34 +948,35 @@ export default function Home() {
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ position: 'relative', flex: 1 }}>
                       <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                      <input type="text" required placeholder={t.contact.form.firstName} value={modalForm.firstName} onChange={e => setModalForm({...modalForm, firstName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                      <input type="text" required maxLength={60} placeholder={t.contact.form.firstName} value={modalForm.firstName} onChange={e => setModalForm({...modalForm, firstName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                     </div>
                     <div style={{ position: 'relative', flex: 1 }}>
                       <User size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                      <input type="text" required placeholder={t.contact.form.lastName} value={modalForm.lastName} onChange={e => setModalForm({...modalForm, lastName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                      <input type="text" required maxLength={60} placeholder={t.contact.form.lastName} value={modalForm.lastName} onChange={e => setModalForm({...modalForm, lastName: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                     </div>
                   </div>
                   
                   <div style={{ position: 'relative' }}>
                     <Mail size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="email" required placeholder={t.contact.form.email} value={modalForm.email} onChange={e => setModalForm({...modalForm, email: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                    <input type="email" required maxLength={100} placeholder={t.contact.form.email} value={modalForm.email} onChange={e => setModalForm({...modalForm, email: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                   </div>
 
                   <div style={{ position: 'relative' }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <input type="tel" required placeholder={t.contact.form.phone} value={modalForm.phone} onChange={e => setModalForm({...modalForm, phone: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                    <input type="tel" required maxLength={30} placeholder={t.contact.form.phone} value={modalForm.phone} onChange={e => setModalForm({...modalForm, phone: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                   </div>
 
 
                     {modalType !== 'login' && (
                       <div style={{ position: 'relative' }}>
                         <Building size={18} color="#64748b" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                        <input type="text" placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                        <input type="text" maxLength={60} placeholder={locale === 'es' ? 'Empresa (Opcional)' : 'Company (Optional)'} value={modalForm.company} onChange={e => setModalForm({...modalForm, company: e.target.value})} style={{ width: '100%', padding: '12px 15px 12px 45px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
                       </div>
                     )}
                         
                     <textarea 
                       required
+                      maxLength={3000}
                       placeholder={t.contact.form.message} 
                       value={modalForm.message} 
                       onChange={e => setModalForm({...modalForm, message: e.target.value})} 
